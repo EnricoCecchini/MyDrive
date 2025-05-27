@@ -23,5 +23,5 @@ class File(Base):
     content: Mapped[Optional[Text]] = mapped_column(Text, nullable=True)
 
     # Relationships
-    folders: Mapped[List["Folder"]] = relationship(back_populates="files", cascade="all, delete-orphan")
+    folder: Mapped["Folder"] = relationship(back_populates="files", cascade="all, delete-orphan")
     tags: Mapped[List["File_Tag"]] = relationship(back_populates="files", cascade="all, delete-orphan")
