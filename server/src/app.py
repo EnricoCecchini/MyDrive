@@ -11,3 +11,12 @@ app.middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@router.get("/test")
+def test_route():
+    return {
+        "message": "Success"
+    }
+
+
+app.include_router(router)
