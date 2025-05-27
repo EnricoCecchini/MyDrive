@@ -1,10 +1,14 @@
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import TIMESTAMP, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from .base import Base
+
+if TYPE_CHECKING:
+    from .folder import Folder
+    from .tag import Tag
 
 
 class User(Base):

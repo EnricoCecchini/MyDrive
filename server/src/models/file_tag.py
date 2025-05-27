@@ -4,6 +4,12 @@ from sqlalchemy.sql import func
 
 from .base import Base
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .file import File
+    from .tag import Tag
+
 
 class File_Tag(Base):
     __tablename__ = "file_tag"

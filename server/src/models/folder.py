@@ -1,10 +1,15 @@
-from typing import Optional, List
+from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import TIMESTAMP, String, ForeignKey, Text
+from sqlalchemy import TIMESTAMP, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from .base import Base
+
+if TYPE_CHECKING:
+    from .file import File
+    from .folder_tag import Folder_Tag
+    from .user import User
 
 
 class Folder(Base):
