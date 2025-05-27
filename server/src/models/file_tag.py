@@ -1,10 +1,10 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import TIMESTAMP, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from .base import Base
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .file import File
