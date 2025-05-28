@@ -20,6 +20,7 @@ export const useAuth = () => {
     return context;
 }
 
+// AuthProvider to wrap Routes that need Authentication
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // Fetch token from localstorage.
     const [token, setToken] = useState<string | null>(localStorage.getItem("authToken"))
@@ -54,4 +55,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         {children}
       </AuthContext.Provider>
     );
+}
+
+export const getAuthToken = (): string | null => {
+    return localStorage.getItem("authToken")
 }
