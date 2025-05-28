@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import EmailInput from '../../components/inputs/EmailInput'
 import PasswordInput from '../../components/inputs/PasswordInput'
 import ButtonConfirm from '../../components/buttons/ButtonConfirm'
@@ -6,17 +6,43 @@ import Navbar from '../../components/Navbar'
 import PageWrapper from '../PageWrapper'
 import { toast } from 'react-toastify'
 import LoginImage from "../../assets/images/login.jpg"
+import { postLoginForm } from '../../api/auth/loginAPI'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
-    const handleSubmit = (e: any) => {
+    const [isPosting, setIsPosting] = useState<boolean>(false)
+    const navigator = useNavigate()
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault()
 
-        const formData = new FormData(e.target)
-        const { email, password } = Object.fromEntries(formData);
-
-        if (!email || !password) {
-            toast.error("Missing fields!")
+        if (isPosting) {
             return
+        }
+
+        setIsPosting(true)
+
+        try {
+            const formData = new FormData(e.target)
+            const username = formData.get("email") as string;
+            const password = formData.get("password") as string;
+
+            if (!username || !password) {
+                toast.error("Missing fields!")
+                return
+            }
+
+            console.log(username, password)
+            const resp = await postLoginForm({username, password})
+
+            if (resp && resp === 200) {
+                navigator("/")
+                return
+            } else {
+                toast.error(resp)
+            }
+        } finally {
+            setIsPosting(false)
         }
     }
 

@@ -7,20 +7,23 @@ interface LoginRequest {
 }
 
 export const postLoginForm = async (loginData: LoginRequest) => {
-    // Import login func from useAuth to set access token
-    const { login } = useAuth()
-
     try {
+        console.log(loginData)
+
         const response = await authApiClient.post("/login", loginData)
 
         if (response.status !== 200) {
             alert(response.data.message)
-            return null
+            return response.data.message
         }
 
-        login(response.data.access_token)
-        return response.data
-    } catch (e) {
-        console.log("Error on login:", e)
+        return response.status
+
+    } catch (e: any) {
+        const message =
+            e.response?.data?.detail ||
+            "Login failed. Please try again.";
+
+        return message;
     }
 }
