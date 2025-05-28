@@ -1,8 +1,9 @@
 import os
 from typing import Generator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import Session, sessionmaker
+from src.models import Base
 
 
 class DatabaseSession:
@@ -57,3 +58,25 @@ class DatabaseSession:
         finally:
             print("Closing session.")
             session.close()
+
+    def initialize_database(self):
+        """
+        Helper func to initialize database if schema has not been imported.
+        """
+        print("[blue]Checking database has been initialized...[/blue]")
+
+        try:
+            db_inspector = inspect(self.engine)
+            tables = db_inspector.get_table_names()
+
+            if not tables:
+                print("[yellow]Warning:[/yellow] Database has not been initialized. Creating tables...")
+                Base.metadata.create_all(bind=self.engine)
+                print("[green]Database Initialized.[/green]")
+
+            else:
+                print(f"[green]Database already initialized with {len(tables)} tables.[/green]")
+
+        except Exception as e:
+            print("[red]Error initializing database: [/red]", e)
+            raise e
