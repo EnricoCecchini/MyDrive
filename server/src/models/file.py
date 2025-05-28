@@ -12,6 +12,22 @@ if TYPE_CHECKING:
 
 
 class File(Base):
+    """
+    File SQLAlchemy model.
+
+    Represents a file inside a folder, optionally with content and associated tags.
+
+    Attributes:
+        id (int): Primary key ID of the file.
+        created_at (datetime): Timestamp when the file was created.
+        folder_id (int): Foreign key referencing the parent folder.
+        name (str): Name of the file.
+        description (Optional[str]): Optional description of the file.
+        content (Optional[str]): Optional content of the file.
+        folder (Folder): Relationship to the parent folder.
+        tags (List[File_Tag]): Tags associated with the file.
+    """
+
     __tablename__ = "file"
 
     # Columns
@@ -23,5 +39,5 @@ class File(Base):
     content: Mapped[Optional[Text]] = mapped_column(Text, nullable=True)
 
     # Relationships
-    folder: Mapped["Folder"] = relationship(back_populates="files", cascade="all, delete-orphan")
-    tags: Mapped[List["File_Tag"]] = relationship(back_populates="files", cascade="all, delete-orphan")
+    folder: Mapped["Folder"] = relationship(back_populates="files")
+    tags: Mapped[List["File_Tag"]] = relationship(back_populates="file", cascade="all, delete-orphan")

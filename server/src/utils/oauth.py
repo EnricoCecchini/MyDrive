@@ -9,12 +9,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 ALGORITHM = "HS256"
 
 
-def generate_token(username: str) -> str:
+def generate_token(uid: int) -> str:
     """
     Auth func to generate a JWT token
 
     Args:
-        `username` (`str`) - Username to generate token.
+        `uid` (`int`) - User ID used to generate token.
 
     Returns:
         `str` - Generated JWT token.
@@ -22,7 +22,7 @@ def generate_token(username: str) -> str:
     expiration = datetime.now(tz=timezone.utc) + timedelta(days=float(os.getenv("TOKEN_DURATION", 14)))
 
     return jwt.encode(
-        {"sub": username, "exp": expiration.timestamp()},
+        {"sub": uid, "exp": expiration.timestamp()},
         key=os.getenv("TOKEN_SECRET"),
         algorithm=ALGORITHM
     )
