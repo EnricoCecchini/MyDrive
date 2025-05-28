@@ -39,5 +39,5 @@ class File(Base):
     content: Mapped[Optional[Text]] = mapped_column(Text, nullable=True)
 
     # Relationships
-    folder: Mapped["Folder"] = relationship(back_populates="files", cascade="all, delete-orphan")
-    tags: Mapped[List["File_Tag"]] = relationship(back_populates="files", cascade="all, delete-orphan")
+    folder: Mapped["Folder"] = relationship(back_populates="files")
+    tags: Mapped[List["File_Tag"]] = relationship(back_populates="file", cascade="all, delete-orphan")

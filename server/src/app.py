@@ -6,6 +6,9 @@ from .routes import *
 app = FastAPI()
 router = APIRouter(prefix="/api")
 
+router.include_router(users_router)
+router.include_router(auth_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,5 +25,3 @@ def test_route():
 
 
 app.include_router(router)
-app.include_router(users_router)
-app.include_router(auth_router)
