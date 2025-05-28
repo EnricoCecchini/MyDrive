@@ -12,6 +12,20 @@ if TYPE_CHECKING:
 
 
 class Folder_Tag(Base):
+    """
+    Folder_Tag SQLAlchemy model.
+
+    Join table between folders and tags to support many-to-many relationships.
+
+    Attributes:
+        id (int): Primary key ID of the folder-tag relationship.
+        created_at (datetime): Timestamp when the relationship was created.
+        folder_id (int): Foreign key referencing the folder.
+        tag_id (int): Foreign key referencing the tag.
+        folder (Folder): Relationship to the associated folder.
+        tag (Tag): Relationship to the associated tag.
+    """
+
     __tablename__ = "folder_tag"
 
     # Columns

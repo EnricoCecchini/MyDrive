@@ -12,6 +12,20 @@ if TYPE_CHECKING:
 
 
 class File_Tag(Base):
+    """
+    File_Tag SQLAlchemy model.
+
+    Join table between files and tags to support many-to-many relationships.
+
+    Attributes:
+        id (int): Primary key ID of the file-tag relationship.
+        created_at (datetime): Timestamp when the relationship was created.
+        file_id (int): Foreign key referencing the file.
+        tag_id (int): Foreign key referencing the tag.
+        file (File): Relationship to the associated file.
+        tag (Tag): Relationship to the associated tag.
+    """
+
     __tablename__ = "file_tag"
 
     # Columns

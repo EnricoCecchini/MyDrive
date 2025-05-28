@@ -13,6 +13,22 @@ if TYPE_CHECKING:
 
 
 class Tag(Base):
+    """
+    Tag SQLAlchemy model.
+
+    Represents a tag created by a user or a default tag. Tags can be associated with folders and files.
+
+    Attributes:
+        id (int): Primary key ID of the tag.
+        created_at (datetime): Timestamp when the tag was created.
+        user_id (Optional[int]): Foreign key referencing the user who owns the tag.
+        name (str): Name of the tag (must be unique per user).
+        description (Optional[str]): Description or note about the tag.
+        user (User): Relationship to the user who owns the tag.
+        folders (List[Folder_Tag]): Link table relationships to folders tagged with this tag.
+        files (List[File_Tag]): Link table relationships to files tagged with this tag.
+    """
+
     __tablename__ = "tag"
     __table_args__ = (
         UniqueConstraint('user_id', 'name', name='uq_user_tagname'),
