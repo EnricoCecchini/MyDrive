@@ -13,6 +13,27 @@ if TYPE_CHECKING:
 
 
 class Folder(Base):
+    """
+    Folder SQLAlchemy model.
+
+    Represents a folder created by a user. Folders can have nested subfolders,
+    files, and associated tags.
+
+    Attributes:
+        id (int): Primary key ID of the folder.
+        created_at (datetime): Timestamp when the folder was created.
+        user_id (int): Foreign key referencing the folder's owner.
+        parent_id (Optional[int]): ID of the parent folder (if any).
+        name (str): Name of the folder.
+        description (Optional[str]): Optional description for the folder.
+        path (Optional[str]): Computed path or hierarchy reference.
+        user (User): Relationship to the folder's owner.
+        files (List[File]): List of files contained within the folder.
+        tags (List[Folder_Tag]): Tags associated with the folder.
+        children (List[Folder]): List of subfolders.
+        parent (Optional[Folder]): Reference to the parent folder.
+    """
+
     __tablename__ = "folder"
 
     # Columns

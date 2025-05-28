@@ -12,6 +12,21 @@ if TYPE_CHECKING:
 
 
 class User(Base):
+    """
+    User SQLAlchemy model.
+
+    Represents a registered user in the system.
+
+    Attributes:
+        id (int): Primary key ID of the user.
+        created_at (datetime): Timestamp when the user was created.
+        username (str): Unique username chosen by the user.
+        email (str): Unique email address used for login/notifications.
+        password_hash (str): Hashed password for secure authentication.
+        folders (List[Folder]): Relationship to folders created by the user.
+        tags (List[Tag]): Relationship to tags associated with the user.
+    """
+
     __tablename__ = "user"
 
     # Columns
