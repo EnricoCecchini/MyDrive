@@ -3,6 +3,7 @@ import EmailInput from '../../components/inputs/EmailInput'
 import PasswordInput from '../../components/inputs/PasswordInput'
 import ButtonConfirm from '../../components/buttons/ButtonConfirm'
 import Navbar from '../../components/Navbar'
+import PageWrapper from '../PageWrapper'
 
 function Login() {
     const handleSubmit = (e: any) => {
@@ -11,14 +12,17 @@ function Login() {
         const formData = new FormData(e.target)
         const { email, password } = Object.fromEntries(formData);
 
-        console.log(email, password)
+        if (!email || !password) {
+            alert("Missing fields!")
+            return
+        }
     }
 
     return (
-        <div className=''>
+        <PageWrapper>
             <div className='flex h-screen w-full items-center justify-center border-1 border-red-700'>
-                <div className='flex flex-row h-fit w-[60%] border-1 border-blue-700 bg-gray-800'>
-                    <div className='border-1 border-green-500 bg-blue-400 rounded-2xl h-[100%] w-full'>
+                <div className='flex flex-row lg:flex-nowrap flex-wrap h-fit w-[60%] bg-gray-800 py-8 rounded-2xl items-center justify-center drop-shadow-2xl border-1 border-blue-700'>
+                    <div className='bg-blue-400 hidden lg:block rounded-2xl h-[30rem] w-full mx-4 border-1 border-green-500'>
 
                     </div>
 
@@ -35,7 +39,7 @@ function Login() {
                     </div>
                 </div>
             </div>
-        </div>
+        </PageWrapper>
     )
 }
 
