@@ -80,3 +80,6 @@ class DatabaseSession:
         except Exception as e:
             print("[red]Error initializing database: [/red]", e)
             raise e
+
+
+db_session = DatabaseSession()
