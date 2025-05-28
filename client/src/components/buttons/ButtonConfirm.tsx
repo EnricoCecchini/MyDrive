@@ -2,9 +2,7 @@ import React from 'react'
 
 function ButtonConfirm() {
   return (
-    <div>
-        <button className='border-1 rounded-lg' type='submit'>Submit</button>
-    </div>
+    <button className='rounded-lg w-full bg-indigo-600 hover:bg-indigo-800 text-white p-2' type='submit'>Submit</button>
   )
 }
 

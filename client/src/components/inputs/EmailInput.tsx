@@ -2,7 +2,7 @@ import React from 'react'
 
 function EmailInput() {
   return (
-    <input className='border-1 rounded-lg p-2 text-lg' type="text" name='email' />
+    <input className='w-full rounded-lg mb-4 p-2 text-lg text-white bg-gray-600' type="text" name='email' placeholder='Email' />
   )
 }
 

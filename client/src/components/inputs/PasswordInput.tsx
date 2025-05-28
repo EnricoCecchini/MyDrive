@@ -6,7 +6,7 @@ interface PasswordInputInterface {
 
 const PasswordInput: React.FC<PasswordInputInterface> = ({ name="password" }) => {
   return (
-    <input className='border-1 rounded-lg p-2 text-lg' type="password" minLength={6} name={name} />
+    <input className='mb-4 rounded-lg p-2 text-lg text-white bg-gray-600' type="text" name={name} placeholder={name} />
   )
 }
 
