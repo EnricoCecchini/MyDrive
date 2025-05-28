@@ -1,8 +1,12 @@
 import React from 'react'
 
-function PasswordInput() {
+interface PasswordInputInterface {
+    name?: string;
+}
+
+const PasswordInput: React.FC<PasswordInputInterface> = ({ name="password" }) => {
   return (
-    <div>PasswordInput</div>
+    <input className='border-1 rounded-lg p-2 text-lg' type="password" minLength={6} name={name} />
   )
 }
 
