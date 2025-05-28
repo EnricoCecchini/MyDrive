@@ -11,10 +11,13 @@ h11==0.16.0
 idna==3.10
 markdown-it-py==3.0.0
 mdurl==0.1.2
+passlib==1.7.4
 pyasn1==0.4.8
 pydantic==2.11.5
 pydantic_core==2.33.2
 Pygments==2.19.1
+PyMySQL==1.1.1
+python-dotenv==1.1.0
 python-jose==3.4.0
 rich==14.0.0
 rsa==4.9.1
