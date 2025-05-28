@@ -36,7 +36,7 @@ class DatabaseSession:
             if self.db_string:
                 return create_engine(self.db_string, echo=True, future=True)
 
-            url = f"mysql+mysqldb://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_database}"
+            url = f"mysql+pymysql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_database}"
             return create_engine(url, echo=True, future=True)
 
         except Exception as e:
