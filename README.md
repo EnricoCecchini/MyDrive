@@ -26,3 +26,12 @@ To run, you must create a .env file with the following values in the root folder
 | `DB_STRING`              | Database String to set connection to the database       | *Optional instead of other DB variables*|
 | **Client Variables**     |                                                         |                                      |
 | `VITE_BASE_API_URL`      | URL and port where the API server is running            | *Required*                           |
+
+
+## Planned Features
+[ ] Rich text editor for writing.
+[ ] Spreadsheets editor.
+[ ] File upload/management system in user-defined path.
+[ ] Collaborative file editing.
+[ ] File sharing.
+[ ] File export/download.
