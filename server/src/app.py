@@ -23,3 +23,4 @@ def test_route():
 
 app.include_router(router)
 app.include_router(users_router)
+app.include_router(auth_router)
