@@ -1,1 +1,2 @@
-from .User import LoginRequest, RegisterRequest
+from .Auth import LoginRequest, RegisterRequest
+from .User import UserProfileResponse, UserUpdatePasswordRequest

@@ -1,4 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Icon from '@mui/material/Icon';
+
+import VisibilityOn from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
+import TextInput from './TextInput';
 
 interface PasswordInputInterface {
     name?: string;
@@ -6,9 +11,25 @@ interface PasswordInputInterface {
 }
 
 const PasswordInput: React.FC<PasswordInputInterface> = ({ name="password", placeholder="Enter your password" }) => {
-  return (
-    <input className='mb-4 rounded-lg p-2 text-white bg-gray-600' minLength={6} type="password" name={name} placeholder={placeholder} />
-  )
+    const [isVisible, setIsVisible] = useState<boolean>(false)
+    const [isFocused, setIsFocused] = useState<boolean>(false)
+
+    const toggleVisibility = () => {
+        const show = isVisible;
+        setIsVisible(!show)
+    }
+
+    return (
+        <>
+            <TextInput
+                name={name}
+                placeholder={placeholder}
+                type={!isVisible ? "password" : "text"}
+            >
+                <span onClick={() => toggleVisibility()}>{!isVisible ? <VisibilityOff /> : <VisibilityOn />}</span>
+            </TextInput>
+        </>
+    )
 }
 
 export default PasswordInput

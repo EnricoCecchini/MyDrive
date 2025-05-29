@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import ExpiredSignatureError, JWTError, jwt
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 ALGORITHM = "HS256"
 
 
@@ -20,9 +20,11 @@ def generate_token(uid: int) -> str:
         `str` - Generated JWT token.
     """
     expiration = datetime.now(tz=timezone.utc) + timedelta(days=float(os.getenv("TOKEN_DURATION", 14)))
-
     return jwt.encode(
-        {"sub": uid, "exp": expiration.timestamp()},
+        {
+            "sub": str(uid),
+            "exp": int(expiration.timestamp())
+        },
         key=os.getenv("TOKEN_SECRET"),
         algorithm=ALGORITHM
     )
