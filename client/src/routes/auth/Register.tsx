@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { postRegisterForm } from '../../api/auth/registerAPI'
@@ -9,11 +9,19 @@ import TextInput from '../../components/inputs/TextInput'
 import PageWrapper from '../PageWrapper'
 
 import LoginImage from "../../assets/images/login.jpg"
+import { useAuth } from '../../auth/AuthProvider'
 
 function Register() {
     const [isPosting, setIsPosting] = useState<boolean>(false)
-
+    const { is_authenticated } = useAuth()
     const navigator = useNavigate()
+
+    useEffect(() => {
+        if (is_authenticated) {
+            navigator("/")
+        }
+
+    }, [])
 
     const handleSubmit = async (e: any) => {
         e.preventDefault()
