@@ -35,8 +35,10 @@ def service_login(user: LoginRequest, db: Session) -> dict[str, str]:
         raise HTTPException(status_code=400, detail="Invalid username or password.")
 
     token = generate_token(user_exists.id)
+
+    print("TOKEN", token)
     return {
         "message": "Login successful.",
         "access_token": token,
-        "token_type": "bearer"
+        "token_type": "Bearer"
     }
