@@ -1,14 +1,10 @@
+from datetime import datetime
+
 from pydantic import BaseModel
-from typing import Optional
 
 
-class RegisterRequest(BaseModel):
+class UserProfileResponse(BaseModel):
+    id: int
     username: str
     email: str
-    password: str
-    password_confirm: str
-
-
-class LoginRequest(BaseModel):
-    username: str
-    password: str
+    created_at: datetime
