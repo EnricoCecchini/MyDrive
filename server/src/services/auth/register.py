@@ -28,6 +28,9 @@ def service_register(user: RegisterRequest, db: Session) -> dict[str]:
     if user.password != user.password_confirm:
         raise HTTPException(status_code=400, detail="Passwords don't match.")
 
+    if len(user.password) < 6:
+        raise HTTPException(status_code=400, detail="Passwords must be at least 6 characters long.")
+
     # Hash user password and create new user
     hashed_pwd = Hash.bcrypt(user.password)
     new_user = User(
