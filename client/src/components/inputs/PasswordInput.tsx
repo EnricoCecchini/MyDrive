@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Icon from '@mui/material/Icon';
 
 import VisibilityOn from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
@@ -12,7 +11,6 @@ interface PasswordInputInterface {
 
 const PasswordInput: React.FC<PasswordInputInterface> = ({ name="password", placeholder="Enter your password" }) => {
     const [isVisible, setIsVisible] = useState<boolean>(false)
-    const [isFocused, setIsFocused] = useState<boolean>(false)
 
     const toggleVisibility = () => {
         const show = isVisible;

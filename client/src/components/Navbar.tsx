@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -8,6 +9,13 @@ function Navbar() {
         {name: "Recent Files", url: "/recent"},
         {name: "Trash", url: "/trash"}
     ]
+
+    const toggleExpanded = () => {
+        const expanded = isExpanded;
+        setIsExpanded(!expanded)
+
+        console.log(expanded)
+    }
 
     return (
         <>
@@ -25,8 +33,8 @@ function Navbar() {
                         )
                     })}
                 </div>
-                <div className='flex items-end'>
-                    <span className='h-full p-2 rounded-lg hover:bg-indigo-800'>Profile</span>
+                <div className='h-full w-[fit]'>
+                    <span className='w-full hover:cursor-grab' onClick={() => toggleExpanded()}><MenuOutlinedIcon sx={{fontSize: "3rem"}}/></span>
                 </div>
             </div>
         </>
