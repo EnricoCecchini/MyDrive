@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import TextInput from './inputs/TextInput';
-import SearchInput from './inputs/SearchInput';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -21,7 +19,7 @@ function Navbar() {
 
     return (
         <>
-            <div className='flex flex-row w-full justify-between items-center p-2 bg-indigo-400 text-white font-bold text-2xl'>
+            <div className='flex flex-row w-full justify-between items-center p-2 px-4 bg-indigo-400 text-white font-bold text-2xl'>
                 <div className='flex items-start gap-x-4'>
                     <span className='text-4xl italic px-4'>MyDrive</span>
                     {options.map((item) => {
@@ -35,11 +33,8 @@ function Navbar() {
                         )
                     })}
                 </div>
-                <div className='h-full w-[40%] flex flex-row flex-nowrap items-center align-middle'>
-                    <div className='w-full'>
-                        <SearchInput />
-                    </div>
-                    <span className='w-fit hover:cursor-grab' onClick={() => toggleExpanded()}><MenuOutlinedIcon sx={{fontSize: "3rem"}}/></span>
+                <div className='h-full w-fit flex flex-row flex-nowrap items-center align-middle'>
+                    <span className='w-fit hover:cursor-grab' onClick={() => toggleExpanded()}><AccountCircleIcon sx={{fontSize: "3rem"}}/></span>
                 </div>
             </div>
         </>
