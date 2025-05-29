@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import TextInput from './inputs/TextInput';
+import SearchInput from './inputs/SearchInput';
 
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -33,8 +35,11 @@ function Navbar() {
                         )
                     })}
                 </div>
-                <div className='h-full w-[fit]'>
-                    <span className='w-full hover:cursor-grab' onClick={() => toggleExpanded()}><MenuOutlinedIcon sx={{fontSize: "3rem"}}/></span>
+                <div className='h-full w-[40%] flex flex-row flex-nowrap items-center align-middle'>
+                    <div className='w-full'>
+                        <SearchInput />
+                    </div>
+                    <span className='w-fit hover:cursor-grab' onClick={() => toggleExpanded()}><MenuOutlinedIcon sx={{fontSize: "3rem"}}/></span>
                 </div>
             </div>
         </>

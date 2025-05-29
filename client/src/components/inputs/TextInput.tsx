@@ -4,10 +4,11 @@ interface TextInputInterface {
     name: string
     placeholder: string
     type?: string
+    margin_botton?: number
     children?: React.ReactNode
 }
 
-const TextInput: React.FC<TextInputInterface> = ({name="textinput", placeholder="placeholder", type="text", children}) => {
+const TextInput: React.FC<TextInputInterface> = ({name="textinput", placeholder="placeholder", type="text", margin_botton=4, children}) => {
     const [isFocused, setIsFocused] = useState<boolean>(false)
 
     const toggleFocus = (e: boolean) => {
@@ -16,7 +17,7 @@ const TextInput: React.FC<TextInputInterface> = ({name="textinput", placeholder=
 
     return (
         <div
-            className={`flex flex-row w-full rounded-lg mb-4 p-2 text-lg text-white transition-all gap-x-2 ${
+            className={`flex flex-row w-full rounded-lg mb-${margin_botton} p-2 text-lg text-white transition-all gap-x-2 ${
                 isFocused ? 'ring-2 ring-indigo-400 bg-gray-500' : 'bg-gray-600'
             }`}
         >
