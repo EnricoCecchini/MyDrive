@@ -8,6 +8,6 @@ from src.services import service_login
 login_router = APIRouter()
 
 
-@login_router.post("/login")
+@login_router.post("/login", status_code=200)
 def route_login(user: LoginRequest, db: Session = Depends(db_session.get_session)):
     return service_login(user=user, db=db)

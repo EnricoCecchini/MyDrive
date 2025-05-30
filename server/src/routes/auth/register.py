@@ -8,6 +8,6 @@ from src.services import service_register
 register_router = APIRouter()
 
 
-@register_router.post("/register")
+@register_router.post("/register", status_code=200)
 def route_register(user: RegisterRequest, db: Session = Depends(db_session.get_session)):
     return service_register(user=user, db=db)

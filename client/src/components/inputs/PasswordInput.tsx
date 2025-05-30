@@ -29,6 +29,7 @@ const PasswordInput: React.FC<PasswordInputInterface> = ({ name="password", plac
                 label={label}
                 value={value}
                 onChange={onChange}
+                minLength={6}
             >
                 <span onClick={() => toggleVisibility()}>{!isVisible ? <VisibilityOff /> : <VisibilityOn />}</span>
             </TextInput>

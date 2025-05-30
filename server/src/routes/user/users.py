@@ -13,11 +13,13 @@ def test_route():
         "message": "Hello World"
     }
 
-@users_router.get("/profile", response_model=UserProfileResponse)
+
+@users_router.get("/profile", response_model=UserProfileResponse, status_code=200)
 def route_profile(auth: dict = Depends(needs_auth), db: Session = Depends(db_session.get_session)):
     return service_user_profile(int(auth.get("sub")), db)
 
-@users_router.post("/update_password")
+
+@users_router.put("/update_password", status_code=200)
 def route_update_password(
     data: UserUpdatePasswordRequest,
     auth: dict = Depends(needs_auth),

@@ -38,5 +38,6 @@ def service_login(user: LoginRequest, db: Session) -> dict[str, str]:
     return {
         "message": "Login successful.",
         "access_token": token,
-        "token_type": "Bearer"
+        "token_type": "Bearer",
+        "status_code": 200
     }

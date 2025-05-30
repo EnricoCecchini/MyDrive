@@ -10,9 +10,10 @@ interface TextInputInterface {
     type?: string
     margin_botton?: number
     children?: React.ReactNode
+    minLength?: number
 }
 
-const TextInput: React.FC<TextInputInterface> = ({name="textinput", placeholder="placeholder", disabled=false, label="", value, onChange, type="text", margin_botton=4, children}) => {
+const TextInput: React.FC<TextInputInterface> = ({name="textinput", placeholder="placeholder", disabled=false, label="", value, onChange, minLength, type="text", margin_botton=4, children}) => {
     const [isFocused, setIsFocused] = useState<boolean>(false)
 
     const toggleFocus = (e: boolean) => {
@@ -21,15 +22,15 @@ const TextInput: React.FC<TextInputInterface> = ({name="textinput", placeholder=
 
     return (
         <div className='w-full'>
-            {label && <label className='text-white text-2xl'>{label}</label>}
+            {label && <label className='text-white text-2xl text-wrap lg:text-nowrap'>{label}</label>}
 
             <div
-                className={`flex flex-row w-full rounded-lg mb-${margin_botton} p-2 text-lg text-white transition-all gap-x-2 ${
-                    isFocused ? 'ring-2 ring-indigo-400 bg-gray-500' : 'bg-gray-600'
+                className={`flex flex-row w-full rounded-lg mb-${margin_botton} p-2 text-lg  transition-all gap-x-2 text-white ${
+                    isFocused ? 'ring-2 ring-indigo-800 bg-gray-500' : 'bg-gray-600'
                 }`}
             >
                 <input
-                    className='w-full focus:outline-none'
+                    className={`w-full focus:outline-none ${disabled ? "text-gray-400" : ""}`}
                     type={type}
                     name={name}
                     placeholder={placeholder}
@@ -38,6 +39,7 @@ const TextInput: React.FC<TextInputInterface> = ({name="textinput", placeholder=
                     value={value}
                     disabled={disabled}
                     onChange={onChange}
+                    minLength={minLength}
                 />
                 {children && <>{children}</>}
             </div>
