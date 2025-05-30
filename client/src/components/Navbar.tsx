@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
+    const navigator = useNavigate()
 
     const options = [
         {name: "Home", url: "/"},
@@ -34,7 +36,7 @@ function Navbar() {
                     })}
                 </div>
                 <div className='h-full w-fit flex flex-row flex-nowrap items-center align-middle'>
-                    <span className='w-fit hover:cursor-grab' onClick={() => toggleExpanded()}><AccountCircleIcon sx={{fontSize: "3rem"}}/></span>
+                    <span className='w-fit hover:cursor-grab' onClick={() => navigator("/profile")}><AccountCircleIcon sx={{fontSize: "3rem"}}/></span>
                 </div>
             </div>
         </>
