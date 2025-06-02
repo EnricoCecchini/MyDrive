@@ -58,7 +58,7 @@ function Login() {
     }
 
     return (
-        <PageWrapper>
+        <PageWrapper bg_color='bg_auth'>
             <div className='flex h-screen w-full items-center justify-center px-8'>
                 <div className='flex flex-row lg:flex-nowrap flex-wrap h-[40%] w-[90%] lg:h-[60%] lg:w-[60%] bg-gray-800 py-8 rounded-2xl items-center justify-center shadow-2xl'>
                     <div className='hidden lg:flex items-center justify-center h-full w-full p-8'>

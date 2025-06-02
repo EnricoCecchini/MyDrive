@@ -24,6 +24,8 @@ To run, you must create a .env file with the following values in the root folder
 | `DB_PORT`                | Port number for MySQL database connection               | Default: `3306`                      |
 | `DB_DATABASE`            | Name of the database used by the API                    | *Required*                           |
 | `DB_STRING`              | Database String to set connection to the database       | *Optional instead of other DB variables*|
+| **File Storage**         |                                                         |                                      |
+| `STORAGE_PATH`           | Path to directory where uploaded files will be stored.  | *Required*                           |
 | **Client Variables**     |                                                         |                                      |
 | `VITE_BASE_API_URL`      | URL and port where the API server is running            | *Required*                           |
 
