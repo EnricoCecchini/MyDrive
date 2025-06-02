@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from src.schemas import UserProfileResponse, UserUpdatePasswordRequest
 from src.services.user import service_update_password, service_user_profile
+from src.services.folder import service_new_folder
 from src.utils import db_session, needs_auth
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
@@ -9,6 +10,14 @@ users_router = APIRouter(prefix="/users", tags=["Users"])
 
 @users_router.get("/test")
 def test_route():
+    return {
+        "message": "Hello World"
+    }
+
+
+@users_router.get("/auth_test")
+def auth_test_route(auth: dict = Depends(needs_auth), db: Session = Depends(db_session.get_session)):
+    service_new_folder(uuid=auth.get("sub"), parent_id=None, name=auth.get("sub"), path=None, db=db)
     return {
         "message": "Hello World"
     }

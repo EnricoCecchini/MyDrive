@@ -5,6 +5,8 @@ from src.models import User
 from src.schemas import RegisterRequest
 from src.utils import Hash
 
+from src.services.folder import service_new_folder
+
 
 def service_register(user: RegisterRequest, db: Session) -> dict[str]:
     """
@@ -43,6 +45,11 @@ def service_register(user: RegisterRequest, db: Session) -> dict[str]:
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
+
+        service_new_folder(
+            uuid=new_user.id,
+            db=db
+        )
 
     except Exception as e:
         print("[red]Error registering new user:[/red]", e)
