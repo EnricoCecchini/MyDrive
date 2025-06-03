@@ -4,16 +4,16 @@ from src.schemas import NewFileRequest
 from src.services.file import service_new_document
 from src.utils import db_session, needs_auth
 
-files_router = APIRouter(prefix="/files", tags=["Files"])
+new_file_router = APIRouter()
 
 
-@files_router.get("/test")
+@new_file_router.get("/test")
 def test_route():
     return {
         "message": "Hello File"
     }
 
-@files_router.post("/new")
+@new_file_router.post("/new")
 def new_file_route(
     file: NewFileRequest,
     auth: dict = Depends(needs_auth),
