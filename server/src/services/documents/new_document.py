@@ -5,17 +5,17 @@ from src.models import File, Folder
 
 def service_new_document(uuid: int, folder_id: int, type_id: int, db: Session, name: str = "New Document") -> dict:
     """
-    Service func to create a new file.
+    Service func to create a new document.
 
     Args:
         `uuid` (`int`) - ID of user.
-        `folder_id` (`int`) - ID of folder where file is created.
-        `type_id` (`int`) - ID of file type.
+        `folder_id` (`int`) - ID of folder where document is created.
+        `type_id` (`int`) - ID of document type.
         `db` (`Session`) - SQLAlchemy session for querying.
-        `name` (`str`) - Name of new file (Default is `New Document`).
+        `name` (`str`) - Name of new document (Default is `New Document`).
 
     Returns:
-        `dict[str, str]` - Dict with user profile data.
+        `dict[str, str]` - Dict with response and new document ID.
     """
 
     try:

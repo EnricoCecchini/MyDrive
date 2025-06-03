@@ -3,26 +3,26 @@ from sqlalchemy.orm import Session
 from src.models import File, Folder
 
 
-def service_get_document(uuid: int, file_id: int, db: Session) -> dict:
+def service_get_document(uuid: int, document_id: int, db: Session) -> dict:
     """
-    Service func to create a new file.
+    Service func to get a database document.
 
     Args:
         `uuid` (`int`) - ID of user.
-        `file_id` (`int`) - ID of file.
+        `document_id` (`int`) - ID of document.
         `db` (`Session`) - SQLAlchemy session for querying.
 
     Returns:
-        `dict[str, str]` - Dict with file data.
+        `dict[str, str]` - Dict with document data.
     """
 
     try:
         print("[cyan]Fetching user document...[/cyan]")
 
-        result = db.query(File).filter(File.id == file_id).join(Folder).filter(Folder.id == File.folder_id, Folder.user_id == uuid).first()
+        result = db.query(File).filter(File.id == document_id).join(Folder).filter(Folder.id == File.folder_id, Folder.user_id == uuid).first()
         if not result:
-            print("[red]File not found...[/red]")
-            raise HTTPException(status_code=500, detail="File not found.")
+            print("[red]Document not found...[/red]")
+            raise HTTPException(status_code=500, detail="Document not found.")
 
         return {
             "id": result.id,
