@@ -27,6 +27,7 @@ class File(Base):
         content (Optional[str]): Optional content of the file.
         folder (Folder): Relationship to the parent folder.
         tags (List[File_Tag]): Tags associated with the file.
+        type_id (int): Foreign key referencing the file type.
     """
 
     __tablename__ = "file"

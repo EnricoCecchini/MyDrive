@@ -1,0 +1,1 @@
+from .new_file import service_new_document

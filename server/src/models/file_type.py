@@ -7,8 +7,7 @@ from sqlalchemy.sql import func
 from .base import Base
 
 if TYPE_CHECKING:
-    from .folder import Folder
-    from .tag import Tag
+    from .file import File
 
 
 class File_Type(Base):
@@ -23,7 +22,7 @@ class File_Type(Base):
         name (str): Unique file type name.
     """
 
-    __tablename__ = "user"
+    __tablename__ = "file_type"
 
     # Columns
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -31,4 +30,4 @@ class File_Type(Base):
     name: Mapped[str] = mapped_column(String(255), unique=True)
 
     # Relationships
-    files: Mapped["File"] = relationship(back_populates="type")
+    files: Mapped[List["File"]] = relationship(back_populates="type", cascade="all, delete-orphan")
