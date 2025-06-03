@@ -94,7 +94,7 @@ function Profile() {
         if (!isLoading) {
             return (
                 <>
-                    <form onSubmit={handleUpdatePassword} className='flex flex-col justify-evenly w-[80%] lg:w-[40%] h-full bg-indigo-400 shadow-2xl p-4 rounded-2xl'>
+                    <form onSubmit={handleUpdatePassword} className='flex flex-col justify-evenly contain-content overflow-y-scroll w-[80%] lg:w-[40%] h-full bg-indigo-400 shadow-2xl p-4 rounded-2xl'>
                         <span className=''>
                             <div className='flex items-end w-full gap-x-2 mt-8 lg:mt-0 flex-wrap lg:flex-nowrap'>
                                 <span className='font-bold w-fit text-nowrap'>Date Registered:</span>
@@ -105,7 +105,7 @@ function Profile() {
                         <TextInput
                             name='username'
                             placeholder='Username'
-                            disabled={false}
+                            disabled={true}
                             label='Username'
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -148,11 +148,11 @@ function Profile() {
 
     return (
         <>
-            <div className='max-h-screen contain-content'>
+            <div className='contain-content overflow-y-scroll'>
             <PageWrapper bg_color='white'>
                 <Navbar />
-                <div className='flex flex-col w-full h-screen justify-center items-center'>
-                    <div className='flex flex-row justify-center w-full h-[60%]'>
+                <div className='flex flex-col w-full min-h-screen justify-center items-center py-4'>
+                    <div className='flex flex-row justify-center w-full h-fit lg:h-[60%]'>
                         <div className='flex flex-col w-full items-center text-2xl text-white'>
                             {render()}
                         </div>
