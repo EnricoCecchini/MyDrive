@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 31, 2025 at 01:59 AM
+-- Generation Time: Jun 03, 2025 at 09:34 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -33,7 +33,8 @@ CREATE TABLE `file` (
   `folder_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `content` longtext DEFAULT NULL
+  `content` longtext DEFAULT NULL,
+  `type_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -47,6 +48,18 @@ CREATE TABLE `file_tag` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `file_id` int(10) UNSIGNED NOT NULL,
   `tag_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `file_type`
+--
+
+CREATE TABLE `file_type` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -115,7 +128,8 @@ CREATE TABLE `user` (
 --
 ALTER TABLE `file`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `file_relation_1` (`folder_id`);
+  ADD KEY `file_relation_1` (`folder_id`),
+  ADD KEY `file_relation_2` (`type_id`);
 
 --
 -- Indexes for table `file_tag`
@@ -124,6 +138,12 @@ ALTER TABLE `file_tag`
   ADD PRIMARY KEY (`id`),
   ADD KEY `file_tag_relation_1` (`file_id`),
   ADD KEY `file_tag_relation_2` (`tag_id`);
+
+--
+-- Indexes for table `file_type`
+--
+ALTER TABLE `file_type`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `folder`
@@ -170,6 +190,12 @@ ALTER TABLE `file_tag`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `file_type`
+--
+ALTER TABLE `file_type`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `folder`
 --
 ALTER TABLE `folder`
@@ -201,7 +227,8 @@ ALTER TABLE `user`
 -- Constraints for table `file`
 --
 ALTER TABLE `file`
-  ADD CONSTRAINT `file_relation_1` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `file_relation_1` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `file_relation_2` FOREIGN KEY (`type_id`) REFERENCES `file_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `file_tag`

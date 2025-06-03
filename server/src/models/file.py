@@ -9,6 +9,7 @@ from .base import Base
 if TYPE_CHECKING:
     from .file_tag import File_Tag
     from .folder import Folder
+    from .file_type import File_Type
 
 
 class File(Base):
@@ -37,7 +38,9 @@ class File(Base):
     name: Mapped[str] = mapped_column(String(255))
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     content: Mapped[Optional[Text]] = mapped_column(Text, nullable=True)
+    type_id: Mapped[int] = mapped_column(ForeignKey("file_type.id"), nullable=False)
 
     # Relationships
     folder: Mapped["Folder"] = relationship(back_populates="files")
     tags: Mapped[List["File_Tag"]] = relationship(back_populates="file", cascade="all, delete-orphan")
+    type: Mapped["File_Type"] = relationship(back_populates="files")
