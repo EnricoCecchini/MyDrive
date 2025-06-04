@@ -35,3 +35,7 @@ def route_update_password(
     db: Session = Depends(db_session.get_session)
 ):
     return service_update_password(int(auth.get("sub")), data.password, data.password_confirm, db)
+
+@users_router.get("/dashboard", status_code=200)
+def route_user_dashboard(auth: dict = Depends(needs_auth)):
+    pass

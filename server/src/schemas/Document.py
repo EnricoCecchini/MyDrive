@@ -8,6 +8,9 @@ class DocumentNewRequest(BaseModel):
     folder_id: int
     type: int
 
+class DocumentUpdateContentRequest(BaseModel):
+    content: str
+
 class DocumentGetResponse(BaseModel):
     id: int
     name: str
