@@ -13,14 +13,14 @@ def test_route():
         "message": "Hello File"
     }
 
-@get_document_router.get("/document/{document_id}", response_model=DocumentGetResponse, status_code=200)
+@get_document_router.get("/document/{document_hash}", response_model=DocumentGetResponse, status_code=200)
 def get_document_route(
-    document_id: int,
+    document_hash: str,
     auth: dict = Depends(needs_auth),
     db: Session = Depends(db_session.get_session)
 ):
     return service_get_document(
         uuid=int(auth.get("sub")),
-        document_id=document_id,
+        document_hash=document_hash,
         db=db
     )

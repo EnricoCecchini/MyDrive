@@ -21,8 +21,8 @@ function App() {
                     <Route path='/register' element={<Register />} />
                     <Route path='/profile' element={<ProtectedRoute> <Profile /> </ProtectedRoute>} />
                     <Route path='/dashboard' element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
-                    <Route path='/document/new' element={<ProtectedRoute> <Document /> </ProtectedRoute>} />
-                    <Route path='/:folder_path/:file_id' element={<ProtectedRoute> <SpreadSheet /> </ProtectedRoute>} />
+                    <Route path='/document/:file_hash' element={<ProtectedRoute> <Document /> </ProtectedRoute>} />
+                    <Route path='/sheet/:file_hash' element={<ProtectedRoute> <SpreadSheet /> </ProtectedRoute>} />
                 </Routes>
             </Router>
         </AuthProvider>

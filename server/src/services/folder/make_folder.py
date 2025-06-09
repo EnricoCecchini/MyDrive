@@ -64,7 +64,8 @@ def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str 
             parent_id=parent_id,
             name=folder_name,
             description=description,
-            path=folder_path
+            path=folder_path,
+            hash=new_hash
         )
 
         print("Saving folder entry ind database...")

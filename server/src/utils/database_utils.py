@@ -85,6 +85,7 @@ class DatabaseSession:
 
 db_session = DatabaseSession()
 
+
 def generate_hash(table: Base, db: Session) -> str:
     """
     Util func to generate a random hash to identify files and folders through the URL.

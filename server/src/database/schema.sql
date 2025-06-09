@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 03, 2025 at 09:34 PM
+-- Generation Time: Jun 09, 2025 at 08:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -34,7 +34,8 @@ CREATE TABLE `file` (
   `name` varchar(255) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   `content` longtext DEFAULT NULL,
-  `type_id` int(10) UNSIGNED NOT NULL
+  `type_id` int(10) UNSIGNED NOT NULL,
+  `hash` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -75,7 +76,8 @@ CREATE TABLE `folder` (
   `parent_id` int(10) UNSIGNED DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `path` text NOT NULL DEFAULT 'NULL'
+  `path` text NOT NULL DEFAULT 'NULL',
+  `hash` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------

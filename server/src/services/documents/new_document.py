@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from src.models import File, Folder
+from src.utils import generate_hash
 
 
 def service_new_document(uuid: int, folder_id: int, type_id: int, db: Session, name: str = "New Document") -> dict:
@@ -31,11 +32,14 @@ def service_new_document(uuid: int, folder_id: int, type_id: int, db: Session, n
         raise HTTPException(status_code=404, detail="Folder not found.")
 
     try:
+        new_hash = generate_hash(Folder, db)
+
         print("[cyan]Creating new document...[/cyan]")
         new_file = File(
             folder_id=folder_id,
             type_id=type_id,
-            name=name
+            name=name,
+            hash=new_hash
         )
 
         db.add(new_file)

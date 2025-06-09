@@ -13,16 +13,16 @@ def test_route():
         "message": "Hello File"
     }
 
-@update_document_router.put("/update/{document_id}", status_code=200)
+@update_document_router.put("/update/{document_hash}", status_code=200)
 def update_document_route(
-    document_id: int,
+    document_hash: str,
     data: DocumentUpdateContentRequest,
     auth: dict = Depends(needs_auth),
     db: Session = Depends(db_session.get_session)
 ):
     return service_update_document(
         uuid=int(auth.get("sub")),
-        document_id=document_id,
+        document_id=document_hash,
         content=data.content,
         db=db
     )
