@@ -5,3 +5,4 @@ from .folder import Folder
 from .folder_tag import Folder_Tag
 from .tag import Tag
 from .user import User
+from .file_type import File_Type
