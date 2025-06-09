@@ -51,13 +51,14 @@ function Register() {
 
             const resp = await postRegisterForm({email, username, password, password_confirm})
 
-            if (resp && resp.status === 200) {
+            if (resp && resp.status === 201) {
                 toast.success("Registration successful!")
                 setTimeout(() => {}, 5000);
                 navigator("/login")
                 return
             } else {
-                toast.error(resp.message)
+                const msg = 'message' in resp ? resp.message : "Registration failed. Please try again."
+                toast.error(msg)
             }
         } finally {
             setIsPosting(false)

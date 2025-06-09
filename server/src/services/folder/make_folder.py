@@ -42,7 +42,7 @@ def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str 
 
             path_db = db.query(Folder).filter(Folder.user_id == uuid, Folder.id == parent_id).first()
             if not path_db:
-                raise HTTPException(status_code=500, detail="Parent folder not found.")
+                raise HTTPException(status_code=404, detail="Parent folder not found.")
 
             folder_path = os.path.join(path_db, name)
             folder_name = name
@@ -73,6 +73,6 @@ def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str 
         raise HTTPException(status_code=500, detail="Error creating folder.")
 
     return {
-        "status_code": 200,
+        "status_code": 201,
         "message": "Folder created succesfully"
     }

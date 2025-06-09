@@ -11,9 +11,8 @@ export const getUserProfile = async () => {
             e.response?.data?.detail ||
             "Error fetching user profile.";
 
-        console.log(message, e)
         return {
-            status: 400,
+            status: e.response.data.status || 400,
             message: message
         };
     }
@@ -28,8 +27,6 @@ interface UpdateUserPasswordInterface {
 export const updateUserPassword = async (data: UpdateUserPasswordInterface) => {
     try {
         const response = await usersApiClient.put("/update_password", data)
-        console.log(response)
-
         return response
 
     } catch (e: any) {
@@ -39,7 +36,7 @@ export const updateUserPassword = async (data: UpdateUserPasswordInterface) => {
 
         console.log(message, e)
         return {
-            status: 400,
+            status: e.response.data.status || 400,
             message: message
         };
     }

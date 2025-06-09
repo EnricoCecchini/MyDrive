@@ -42,12 +42,14 @@ function Login() {
             }
 
             const resp = await postLoginForm({username, password})
-            if (resp && resp.status === 200) {
-                login(resp.token)
+
+            if (resp.status === 200 && 'data' in resp) {
+                login(resp.data.access_token)
                 navigator("/")
                 return
             } else {
-                toast.error(resp.message)
+                const msg = 'message' in resp ? resp.message : "Login failed. Please try again."
+                toast.error(msg)
             }
         } finally {
             setIsPosting(false)
