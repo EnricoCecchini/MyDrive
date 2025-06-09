@@ -8,8 +8,8 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .file_tag import File_Tag
-    from .folder import Folder
     from .file_type import File_Type
+    from .folder import Folder
 
 
 class File(Base):
@@ -28,6 +28,7 @@ class File(Base):
         folder (Folder): Relationship to the parent folder.
         tags (List[File_Tag]): Tags associated with the file.
         type_id (int): Foreign key referencing the file type.
+        hash (str): Uinique hash for the file, generated on creation.
     """
 
     __tablename__ = "file"
@@ -40,6 +41,7 @@ class File(Base):
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     content: Mapped[Optional[Text]] = mapped_column(Text, nullable=True)
     type_id: Mapped[int] = mapped_column(ForeignKey("file_type.id"), nullable=False)
+    hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=False, unique=True)
 
     # Relationships
     folder: Mapped["Folder"] = relationship(back_populates="files")

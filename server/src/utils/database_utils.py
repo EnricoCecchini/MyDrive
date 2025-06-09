@@ -1,4 +1,5 @@
 import os
+import uuid
 from typing import Generator
 
 from sqlalchemy import create_engine, inspect
@@ -83,3 +84,17 @@ class DatabaseSession:
 
 
 db_session = DatabaseSession()
+
+def generate_hash(table: Base, db: Session) -> str:
+    """
+    Util func to generate a random hash to identify files and folders through the URL.
+
+    Returns:
+        `str` - Random hash string.
+    """
+
+    while True:
+        hash_value = uuid.uuid4().hex[:32]
+        exists = db.query(table).filter(table.hash == hash_value).first()
+        if not exists:
+            return hash_value

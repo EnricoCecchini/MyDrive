@@ -1,7 +1,9 @@
 import os
+
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from src.models import Folder
-from fastapi import HTTPException
+from src.utils import generate_hash
 
 
 def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str = None, path: str = None, description: str = None) -> dict[str, str]:
@@ -52,6 +54,8 @@ def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str 
         print("Creating folder in system...")
         # Create folders
         os.makedirs(folder_path, exist_ok=True)
+
+        new_hash = generate_hash(Folder, db)
 
         print("Creating folder entry ind database...")
         # Register folders in database
