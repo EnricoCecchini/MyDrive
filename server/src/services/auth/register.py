@@ -57,5 +57,5 @@ def service_register(user: RegisterRequest, db: Session) -> dict[str]:
 
     return {
         "message": "User registered successfully.",
-        "status_code": 200
+        "status_code": 201
     }

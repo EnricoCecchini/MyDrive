@@ -22,7 +22,7 @@ def service_get_document(uuid: int, document_id: int, db: Session) -> dict:
         result = db.query(File).filter(File.id == document_id).join(Folder).filter(Folder.id == File.folder_id, Folder.user_id == uuid).first()
         if not result:
             print("[red]Document not found...[/red]")
-            raise HTTPException(status_code=500, detail="Document not found.")
+            raise HTTPException(status_code=404, detail="Document not found.")
 
         return {
             "id": result.id,

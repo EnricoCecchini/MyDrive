@@ -45,5 +45,5 @@ def service_update_password(uuid: int, password: str, password_confirm: str, db:
 
     return {
         "message": "Password updated successfully.",
-        "status_code": 200
+        "status_code": 201
     }

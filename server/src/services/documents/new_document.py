@@ -24,11 +24,11 @@ def service_new_document(uuid: int, folder_id: int, type_id: int, db: Session, n
         folder_exists = db.query(Folder).filter(Folder.id == folder_id, Folder.user_id == uuid).first()
         if not folder_exists:
             print("[red]Folder not found...[/red]")
-            raise HTTPException(status_code=500, detail="Folder not found.")
+            raise HTTPException(status_code=404, detail="Folder not found.")
 
     except Exception as e:
         print("[red]Folder not found...[/red]", e)
-        raise HTTPException(status_code=500, detail="Folder not found.")
+        raise HTTPException(status_code=404, detail="Folder not found.")
 
     try:
         print("[cyan]Creating new document...[/cyan]")
@@ -44,7 +44,7 @@ def service_new_document(uuid: int, folder_id: int, type_id: int, db: Session, n
 
         return {
             "message": "Document created successfully.",
-            "status_code": 200,
+            "status_code": 201,
             "doc_id": new_file.id
         }
 

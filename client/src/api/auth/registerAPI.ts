@@ -13,12 +13,7 @@ export const postRegisterForm = async (registerData: RegisterRequest) => {
         console.log(registerData)
 
         const resp = await authApiClient.post("/register", registerData)
-        return {
-            status: resp.status,
-            message: resp.data.message,
-            token: resp.data.access_token,
-            token_type: resp.data.token_type
-        };
+        return resp;
 
     } catch (e: any) {
         const message =
@@ -26,7 +21,7 @@ export const postRegisterForm = async (registerData: RegisterRequest) => {
             "Login failed. Please try again.";
 
         return {
-            status: 400,
+            status: e.response.data.status || 400,
             message: message
         };
     }

@@ -25,7 +25,7 @@ def service_update_document(uuid: int, document_id: int, content: str, db: Sessi
         file_update = db.query(File).filter(File.id == document_id).join(Folder).filter(Folder.user_id == uuid).first()
         if not file_update:
             print("[red]File not found...[/red]")
-            raise HTTPException(status_code=500, detail="File not found.")
+            raise HTTPException(status_code=404, detail="File not found.")
 
         print("[cyan]Updating document content...[/cyan]")
         file_update.name = name
@@ -36,7 +36,7 @@ def service_update_document(uuid: int, document_id: int, content: str, db: Sessi
 
         return {
             "message": "Document created successfully.",
-            "status_code": 200,
+            "status_code": 201,
         }
 
     except Exception as e:
