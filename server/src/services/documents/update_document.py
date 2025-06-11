@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from src.models import File, Folder
 
 
-def service_update_document(uuid: int, document_hash: str, content: str, db: Session, name: str = "New Document") -> dict:
+def service_update_document(uuid: int, document_hash: str, content: str, db: Session) -> dict:
     """
     Service func to update a document.
 
@@ -28,7 +28,6 @@ def service_update_document(uuid: int, document_hash: str, content: str, db: Ses
             raise HTTPException(status_code=404, detail="File not found.")
 
         print("[cyan]Updating document content...[/cyan]")
-        file_update.name = name
         file_update.content = content
 
         db.commit()

@@ -17,7 +17,7 @@ def service_update_document_title(uuid: int, document_hash: str, db: Session, na
         `dict[str, str]` - Dict with response and new document ID.
     """
 
-    print("[cyan]Updating document name...[/cyan]")
+    print("[cyan]Updating document name...[/cyan]", uuid, document_hash, name)
     try:
         print("[yellow]Fetching document...[/yellow]")
 
@@ -25,6 +25,8 @@ def service_update_document_title(uuid: int, document_hash: str, db: Session, na
         if not file_update:
             print("[red]Document not found...[/red]")
             raise HTTPException(status_code=404, detail="Document not found.")
+
+        print(file_update.__dict__)
 
         print("[cyan]Updating document name...[/cyan]")
         file_update.name = name

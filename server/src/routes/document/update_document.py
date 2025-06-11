@@ -34,6 +34,7 @@ def update_document_rename_route(
     auth: dict = Depends(needs_auth),
     db: Session = Depends(db_session.get_session)
 ):
+    print(data)
     return service_update_document_title(
         uuid=int(auth.get("sub")),
         document_hash=document_hash,

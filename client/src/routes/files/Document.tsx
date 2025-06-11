@@ -9,6 +9,8 @@ import { getDocument } from '../../api/documents/getDocumentAPI';
 import { toast } from 'react-toastify';
 import ButtonCustom from '../../components/buttons/ButtonCustom';
 import './Document.css'
+import { putUpdateDocumentTitle } from '../../api/documents/updateDocumentTitleAPI';
+import { putUpdateDocumentContent } from '../../api/documents/updateDocumentContentAPI';
 
 
 const OPTIONS = {
@@ -42,6 +44,11 @@ function Document() {
 
     useEffect(() => {
         const fetchDocument = async () => {
+            if (isLoading) {
+                toast.info("Please wait while the current request is finished.")
+                return
+            }
+
             setIsLoading(true)
             console.log("Fetching document content...")
 
@@ -81,6 +88,60 @@ function Document() {
 
     }, [content])
 
+    const handleUpdateTitle = async () => {
+        console.log("Updating document title...")
+
+        try {
+            // API request to update document title
+            const resp = await putUpdateDocumentTitle({hash: file_hash || "", name: title})
+
+            if (resp.status !== 200) {
+                console.error("Error renaming document:", 'data' in resp ? resp.data.message : "Unkown error.")
+                toast.error("Error renaming document.")
+                return
+            }
+
+            return true
+        } catch (e) {
+            console.error("Error updating document title:", e)
+            toast.error("Error updating document title.")
+        }
+    }
+
+    // Manual Save
+    const handleSave = async () => {
+        if (isLoading) {
+            toast.info("Please wait while the current request is finished.")
+            return
+        }
+
+        setIsLoading(true)
+        console.log("Saving document...")
+
+        try {
+            // Update document title
+            const titleUpdateSucess = await handleUpdateTitle()
+
+            if (!titleUpdateSucess) {
+                return
+            }
+
+            // Update document content
+            const resp = await putUpdateDocumentContent({hash: file_hash || "", content: content})
+            if (resp.status !== 200) {
+                console.error("Error renaming document:", 'data' in resp ? resp.data.message : "Unkown error.")
+                toast.error("Error renaming document.")
+                return
+            }
+
+            toast.success("Document saved successfully.")
+        } catch (e) {
+            console.error("Error saving document changes:", e)
+        }
+
+        setIsLoading(false)
+    }
+
     return (
         <PageWrapper>
             <Navbar />
@@ -105,7 +166,7 @@ function Document() {
                                 style={{height: "75vh", overflowY: "scroll"}}
                             />
 
-                            <ButtonCustom label="Save" />
+                            <ButtonCustom label="Save" onClick={handleSave} />
                         </div>
                     </div>
             </div>
