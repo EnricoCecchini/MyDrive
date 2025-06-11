@@ -2,7 +2,13 @@ import React from 'react'
 import FileItem from '../../../components/other/FileItem'
 
 interface FilesSectionInterface {
-    files: Array<{name:string, hash: string, type: number, type_name: string, tags: Array<{id:number, name: string}>}>
+    files: Array<{
+        name:string,
+        hash: string,
+        type: number,
+        type_name: string,
+        date_created: string,
+        tags: Array<{id:number, name: string}>}>
 }
 
 const FilesSection: React.FC<FilesSectionInterface> = ({ files }) => {
@@ -16,8 +22,7 @@ const FilesSection: React.FC<FilesSectionInterface> = ({ files }) => {
                     name={item.name}
                     hash={item.hash}
                     type={item.type}
-                    date_created=''
-                    date_modified=''
+                    date_created={item.date_created}
                 />
             )
 

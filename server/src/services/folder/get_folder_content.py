@@ -2,6 +2,7 @@ import os
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import desc
 from src.models import Folder, File, File_Type
 
 
@@ -34,8 +35,8 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
             raise HTTPException(status_code=404, detail="Folder not found.")
 
         print("Fetching folder content...")
-        content_folders = db.query(Folder).filter(Folder.parent_id ==curr_folder.id).all()
-        content_files = db.query(File).filter(File.folder_id == curr_folder.id).join(File_Type, File_Type.id == File.type_id).all()
+        content_folders = db.query(Folder).filter(Folder.parent_id ==curr_folder.id).order_by(desc(Folder.id)).all()
+        content_files = db.query(File).filter(File.folder_id == curr_folder.id).join(File_Type, File_Type.id == File.type_id).order_by(desc(File.id)).all()
 
         print(content_folders)
 
@@ -46,6 +47,7 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
                 "file_hash": file.hash,
                 "type": file.type.id,
                 "type_name": file.type.name,
+                "date_created": file.created_at,
                 "tags": [{"id": tag.id, "name": tag.name} for tag in file.tags]
             } for file in content_files]
         }

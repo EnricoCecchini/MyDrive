@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css';
 import TextInput from '../../components/inputs/TextInput'
 import Navbar from '../../components/Navbar'
 import PageWrapper from '../PageWrapper'
+import { useParams } from 'react-router-dom';
 
 
 const OPTIONS = {
@@ -28,34 +29,54 @@ const OPTIONS = {
 }
 
 function Document() {
-    const [title, setTitle] = useState<string>("Untitled Document")
+    const { file_hash } = useParams<{file_hash: string}>()
+
+    const [title, setTitle] = useState<string>("")
     const [content, setContent] = useState<string>("")
 
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
+    useEffect(() => {
+        const fetchDocument = async () => {
+            setIsLoading(true)
+            console.log("Fetching document content...")
 
+            // API request to fetch document content
+            try {
+
+            } catch (e) {
+                console.error('Error fetching document content:', e)
+            }
+
+            setIsLoading(false)
+        }
+
+        fetchDocument()
+    }, [file_hash])
 
     return (
         <PageWrapper>
             <Navbar />
-            <div className='flex flex-col w-full min-h-screen contain-content p-4 items-center'>
-                <div className='items-start'>
-                <div className='w-fit items-start'>
-                    <TextInput
-                        name='Document Title'
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder='Untitled Document'
-                        type="text"
-                    />
-                </div>
+                <div className='flex flex-col w-full h-full contain-content p-4 items-center'>
+                    <div className='items-start h-full'>
+                        <div className='w-fit items-start'>
+                            <TextInput
+                                name='Document Title'
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                placeholder='Untitled Document'
+                                type="text"
+                            />
+                        </div>
 
-                <ReactQuill
-                    theme="snow"
-                    value={content}
-                    onChange={setContent}
-                    modules={ OPTIONS }
-                />
-                </div>
+                        <ReactQuill
+                            theme="snow"
+                            value={content}
+                            onChange={setContent}
+                            modules={ OPTIONS }
+                            style={{height: "80vh", overflowY: "scroll"}}
+                        />
+                    </div>
             </div>
         </PageWrapper>
     )

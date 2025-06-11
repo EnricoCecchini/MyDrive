@@ -48,6 +48,7 @@ function Dashboard() {
                     return {
                         name: item.name,
                         folder_hash: item.hash,
+                        date_created: item.created_at,
                         tags: item.tags.map((tag: any) => {
                             return {
                                 id: tag.id,
@@ -62,6 +63,7 @@ function Dashboard() {
                         name: item.name,
                         hash: item.file_hash,
                         type: item.type,
+                        date_created: item.date_created,
                         type_name: item.type_name,
                         tags: item.tags.map((tag: any) => {
                             return {
@@ -150,7 +152,7 @@ function Dashboard() {
                         Files
                     </h1>
                     <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
-                    <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewDocs} />
+                    <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
 
                     <FolderSection folders={folders} />
                     <FilesSection files={files} />
