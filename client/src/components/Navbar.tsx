@@ -22,7 +22,7 @@ function Navbar() {
     }
 
     const options = [
-        {name: "Home", url: "/dashboard"},
+        {name: "Home", url: "/folders"},
         {name: "Recent Files", url: "/recent"},
         {name: "Trash", url: "/trash"}
     ]
