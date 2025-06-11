@@ -9,6 +9,13 @@ interface createDocumentInterface {
 export const postCreateDocument = async (data: createDocumentInterface) => {
     console.log("New document data:", data)
 
+    if (!data.folder_hash || !data.name || !data.type) {
+        return {
+            status: 400,
+            message: "Missing fields"
+        }
+    }
+
     try {
         const response = await docsApiClient.post(`/new`, data)
         return response

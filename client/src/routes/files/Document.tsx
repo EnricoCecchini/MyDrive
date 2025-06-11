@@ -5,6 +5,10 @@ import TextInput from '../../components/inputs/TextInput'
 import Navbar from '../../components/Navbar'
 import PageWrapper from '../PageWrapper'
 import { useParams } from 'react-router-dom';
+import { getDocument } from '../../api/documents/getDocumentAPI';
+import { toast } from 'react-toastify';
+import ButtonCustom from '../../components/buttons/ButtonCustom';
+import './Document.css'
 
 
 const OPTIONS = {
@@ -43,16 +47,39 @@ function Document() {
 
             // API request to fetch document content
             try {
+                const resp = await getDocument(file_hash || "")
+
+                // Check if response is valid
+                if (resp.status !== 200 || !('data' in resp)) {
+                    console.log("Error fetching document content:", 'data' in resp ? resp.data.message : "Unkown error.")
+                    toast.error("Error fetching document content.")
+
+                    setIsLoading(false)
+                    return
+                }
+
+                // Set document data
+                setTitle(resp.data.name)
+                setContent(resp.data.content || "")
 
             } catch (e) {
                 console.error('Error fetching document content:', e)
-            }
+                toast.error("Error fetching document content.")
 
+                setIsLoading(false)
+                return
+            }
             setIsLoading(false)
         }
 
         fetchDocument()
     }, [file_hash])
+
+    // Save document every 10 seconds
+    useEffect(() => {
+
+
+    }, [content])
 
     return (
         <PageWrapper>
@@ -69,13 +96,17 @@ function Document() {
                             />
                         </div>
 
-                        <ReactQuill
-                            theme="snow"
-                            value={content}
-                            onChange={setContent}
-                            modules={ OPTIONS }
-                            style={{height: "80vh", overflowY: "scroll"}}
-                        />
+                        <div className='w-full h-full flex flex-col items-center gap-y-4'>
+                            <ReactQuill
+                                theme="snow"
+                                value={content}
+                                onChange={setContent}
+                                modules={ OPTIONS }
+                                style={{height: "75vh", overflowY: "scroll"}}
+                            />
+
+                            <ButtonCustom label="Save" />
+                        </div>
                     </div>
             </div>
         </PageWrapper>

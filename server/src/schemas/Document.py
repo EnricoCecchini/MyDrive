@@ -11,6 +11,9 @@ class DocumentNewRequest(BaseModel):
 class DocumentUpdateContentRequest(BaseModel):
     content: str
 
+class DocumentUpdateNameRequest(BaseModel):
+    name: str
+
 class DocumentGetResponse(BaseModel):
     id: int
     name: str
