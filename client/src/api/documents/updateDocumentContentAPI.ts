@@ -9,7 +9,7 @@ interface UpdateDocumentContentInterface {
 export const putUpdateDocumentContent = async (data: UpdateDocumentContentInterface) => {
     console.log("Document hash:", data.hash)
 
-    if (!data.hash || !data.content) {
+    if (!data.hash) {
         return {
             status: 400,
             message: "Document hash and content is required."
@@ -17,7 +17,7 @@ export const putUpdateDocumentContent = async (data: UpdateDocumentContentInterf
     }
 
     try {
-        const response = await docsApiClient.put(`/update/${data.hash}`, { content: data.content })
+        const response = await docsApiClient.put(`/update/${data.hash}`, { content: data.content || "" })
         return response
 
     } catch (e: any) {
