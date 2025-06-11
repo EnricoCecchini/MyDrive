@@ -10,6 +10,8 @@ import { getFolderDashboard } from '../../../api/user/dashboardAPI';
 import { toast } from 'react-toastify';
 import { postCreateDocument } from '../../../api/documents/createDocumentAPI';
 import FilesSection from './FilesSection';
+import TextInput from '../../../components/inputs/TextInput';
+import ButtonConfirm from '../../../components/buttons/ButtonConfirm';
 
 function Dashboard() {
     const { folder_hash } = useParams<{ folder_hash: string }>()
@@ -152,9 +154,15 @@ function Dashboard() {
                     onContextMenu={(e) => {e.preventDefault(); console.log("Context Menu Opened")}}
                 >
                     <div className="flex flex-col p-4 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl">
-                        <h1 className='text-3xl'>
-                            {!folder_hash ? "root" : folderName}
-                        </h1>
+                        <div className='flex flex-row w-fit h'>
+                            <TextInput
+                                name='name'
+                                placeholder='Folder Name'
+                                value={!folder_hash ? "root" : folderName}
+
+                            />
+                        </div>
+
                         <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
                         <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
 
