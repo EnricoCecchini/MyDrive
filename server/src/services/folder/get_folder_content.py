@@ -41,6 +41,7 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
         print(content_folders)
 
         data = {
+            "curr_folder": curr_folder.name,
             "folders": [{
                     "name": folder.name,
                     "hash": folder.hash,
@@ -67,8 +68,3 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
     except Exception as e:
         print("[red]Error fetching folder:[/red]", e)
         raise HTTPException(status_code=500, detail="Error fetching folder.")
-
-    return {
-        "status_code": 201,
-        "message": "Folder created succesfully"
-    }

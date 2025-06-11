@@ -9,7 +9,7 @@ const FolderSection: React.FC<FolderSeciontInterface> = ({folders}) => {
     console.log(folders)
 
     return (
-        <div className='flex flex-row w-full h-full overflow-y-scroll flex-wrap items-start gap-4 px-4  border border-green-500'>
+        <div className='flex flex-row w-full h-full flex-wrap items-start gap-4 px-4'>
             {folders.map((item, index) => {
                 return (
                     <div key={`dir${index}`}>

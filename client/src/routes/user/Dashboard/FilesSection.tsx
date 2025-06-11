@@ -14,7 +14,7 @@ interface FilesSectionInterface {
 const FilesSection: React.FC<FilesSectionInterface> = ({ files }) => {
     console.log(files)
   return (
-    <div className='flex flex-row w-full h-full overflow-y-scroll flex-wrap items-start gap-4 px-4  border border-green-500'>
+    <div className='flex flex-row w-full h-full flex-wrap items-start gap-4 px-4'>
         {files.map((item) => {
             return (
                 <FileItem

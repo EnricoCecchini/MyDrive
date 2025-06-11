@@ -18,6 +18,7 @@ function Dashboard() {
     const [files, setFiles] = useState<any[]>([])
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [folderName, setFolderName] = useState<string>()
 
     const navigator = useNavigate()
 
@@ -73,6 +74,8 @@ function Dashboard() {
                         })
                     }
                 }))
+
+                setFolderName(resp.data.data.curr_folder)
 
             } catch (e) {
                 console.log("Error fetching folder content:", e)
@@ -145,17 +148,20 @@ function Dashboard() {
             <PageWrapper>
                 <Navbar />
                 <div
-                    className='flex flex-col w-full h-full px-4 gap-y-4  border-2 border-red-500'
+                    className='p-4'
                     onContextMenu={(e) => {e.preventDefault(); console.log("Context Menu Opened")}}
                 >
-                    <h1 className='text-3xl'>
-                        Files
-                    </h1>
-                    <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
-                    <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                    <div className="flex flex-col p-4 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl">
+                        <h1 className='text-3xl'>
+                            {!folder_hash ? "root" : folderName}
+                        </h1>
+                        <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
+                        <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
 
-                    <FolderSection folders={folders} />
-                    <FilesSection files={files} />
+                        <FolderSection folders={folders} />
+                        <br />
+                        <FilesSection files={files} />
+                    </div>
                 </div>
             </PageWrapper>
         </>

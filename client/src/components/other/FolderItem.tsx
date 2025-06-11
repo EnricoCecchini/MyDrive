@@ -14,7 +14,7 @@ const FolderItem: React.FC<FolderItemInterface> = ({id, name, hash, tags}) => {
 
     return (
         <div
-            className='flex flex-col items-center hover:bg-gray-200 border border-blue-600'
+            className='flex flex-col w-[10rem] items-center hover:bg-gray-200 border rounded-lg'
             onClick={() => navigator(`/folders/${hash}`)}
         >
             <FolderIcon sx={{fontSize: "8rem"}} />
