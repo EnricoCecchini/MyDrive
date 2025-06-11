@@ -8,5 +8,3 @@ class NewFileRequest(BaseModel):
     title: str
     folder_id: int
     type: Literal['doc', 'sheet']
-
-

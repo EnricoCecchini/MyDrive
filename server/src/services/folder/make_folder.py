@@ -46,7 +46,7 @@ def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str 
             if not path_db:
                 raise HTTPException(status_code=404, detail="Parent folder not found.")
 
-            folder_path = os.path.join(path_db, name)
+            folder_path = os.path.join(path_db.path, name)
             folder_name = name
 
         print("Final folder path:", folder_path)

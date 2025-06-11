@@ -41,7 +41,13 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
         print(content_folders)
 
         data = {
-            "folders": [folder.to_dict() for folder in content_folders],
+            "folders": [{
+                    "name": folder.name,
+                    "hash": folder.hash,
+                    "date_created": folder.created_at,
+                    "tags": [{"id": tag.id, "name": tag.name} for tag in folder.tags]
+                } for folder in content_folders
+            ],
             "files": [{
                 "name": file.name,
                 "file_hash": file.hash,

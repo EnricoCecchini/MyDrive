@@ -47,7 +47,7 @@ function Dashboard() {
                 setFolders(resp.data.data.folders.map((item: any) => {
                     return {
                         name: item.name,
-                        folder_hash: item.hash,
+                        hash: item.hash,
                         date_created: item.created_at,
                         tags: item.tags.map((tag: any) => {
                             return {
