@@ -5,17 +5,17 @@ import { useNavigate } from 'react-router-dom';
 interface FolderItemInterface {
     id: number;
     name: string;
-    url: string;
+    hash: string;
     tags: Array<{id: number, name: string}>
 }
 
-const FolderItem: React.FC<FolderItemInterface> = ({id, name, url, tags}) => {
+const FolderItem: React.FC<FolderItemInterface> = ({id, name, hash, tags}) => {
     const navigator = useNavigate();
 
     return (
         <div
             className='flex flex-col items-center hover:bg-gray-200 border border-blue-600'
-            onClick={() => navigator(url)}
+            onClick={() => navigator(`/dashboard/${hash}`)}
         >
             <FolderIcon sx={{fontSize: "8rem"}} />
             <span>{name}</span>

@@ -2,7 +2,7 @@ import React from 'react'
 import FolderItem from '../../../components/other/FolderItem'
 
 interface FolderSeciontInterface {
-    folders: Array<{id: number, name:string, url:string, tags: Array<{id:number, name: string}>}>
+    folders: Array<{id: number, name:string, hash:string, tags: Array<{id:number, name: string}>}>
 }
 
 const FolderSection: React.FC<FolderSeciontInterface> = ({folders}) => {
@@ -11,7 +11,7 @@ const FolderSection: React.FC<FolderSeciontInterface> = ({folders}) => {
         {folders.map((item, index) => {
             return (
                 <div key={`dir${index}`}>
-                    <FolderItem id={item.id} name={item.name} url={item.url} tags={item.tags} />
+                    <FolderItem id={item.id} name={item.name} hash={item.hash} tags={item.tags} />
                 </div>
             )
         })}

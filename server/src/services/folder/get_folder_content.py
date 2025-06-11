@@ -2,7 +2,7 @@ import os
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from src.models import Folder, File
+from src.models import Folder, File, File_Type
 
 
 def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) -> dict[str, str]:
@@ -35,11 +35,19 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
 
         print("Fetching folder content...")
         content_folders = db.query(Folder).filter(Folder.parent_id ==curr_folder.id).all()
-        content_files = db.query(File).filter(File.folder_id == curr_folder.id).all()
+        content_files = db.query(File).filter(File.folder_id == curr_folder.id).join(File_Type, File_Type.id == File.type_id).all()
+
+        print(content_folders)
 
         data = {
             "folders": [folder.to_dict() for folder in content_folders],
-            "files": [file.to_dict() for file in content_files]
+            "files": [{
+                "name": file.name,
+                "file_hash": file.hash,
+                "type": file.type.id,
+                "type_name": file.type.name,
+                "tags": [{"id": tag.id, "name": tag.name} for tag in file.tags]
+            } for file in content_files]
         }
 
         return {

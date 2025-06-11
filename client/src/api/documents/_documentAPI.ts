@@ -3,11 +3,11 @@ import { applyAuthInterceptor, applyJSONHeaderInterceptor } from "../api"
 
 // Create auth API client
 const baseURL = import.meta.env.VITE_BASE_API_URL;
-const usersApiClient = axios.create({ baseURL: `${baseURL}/api/users` });
+const docsApiClient = axios.create({ baseURL: `${baseURL}/api/documents` });
 
 
 // Apply Auth Interceptor to client
-applyAuthInterceptor(usersApiClient);
-applyJSONHeaderInterceptor(usersApiClient);
+applyAuthInterceptor(docsApiClient);
+applyJSONHeaderInterceptor(docsApiClient);
 
-export default usersApiClient;
+export default docsApiClient;

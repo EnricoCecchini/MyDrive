@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class DocumentNewRequest(BaseModel):
     name: str
-    folder_hash: int
+    folder_hash: str
     type: int
 
 class DocumentUpdateContentRequest(BaseModel):

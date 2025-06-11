@@ -1,0 +1,30 @@
+import React from 'react'
+import FileItem from '../../../components/other/FileItem'
+
+interface FilesSectionInterface {
+    files: Array<{name:string, hash: string, type: number, type_name: string, tags: Array<{id:number, name: string}>}>
+}
+
+const FilesSection: React.FC<FilesSectionInterface> = ({ files }) => {
+    console.log(files)
+  return (
+    <div className='flex flex-row w-full h-full overflow-y-scroll flex-wrap items-start gap-4 px-4  border border-green-500'>
+        {files.map((item) => {
+            return (
+                <FileItem
+                    key={item.hash}
+                    name={item.name}
+                    hash={item.hash}
+                    type={item.type}
+                    date_created=''
+                    date_modified=''
+                />
+            )
+
+
+        })}
+    </div>
+  )
+}
+
+export default FilesSection

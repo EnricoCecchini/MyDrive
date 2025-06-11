@@ -4,7 +4,8 @@ from typing import Generator
 
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import Session, sessionmaker
-from src.models import Base
+from src.models import Base, Folder
+from fastapi import HTTPException
 
 
 class DatabaseSession:
@@ -99,3 +100,22 @@ def generate_hash(table: Base, db: Session) -> str:
         exists = db.query(table).filter(table.hash == hash_value).first()
         if not exists:
             return hash_value
+
+
+def get_root_folder_hash(db: Session, uuid: int) -> str:
+    """
+    Util func to get root folder hash.
+
+    Args:
+        `db` (`Session`) - SQLAlchemy session.
+        `uuid` (`int`) - User ID.
+
+    Returns:
+        `str` - Hash for user root folder.
+    """
+
+    root = db.query(Folder).filter(Folder.user_id == uuid, Folder.parent_id.is_(None)).first()
+    if not root:
+        raise HTTPException(status_code=404, detail="Root folder not found.")
+
+    return root.hash

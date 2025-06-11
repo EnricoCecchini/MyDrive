@@ -5,8 +5,11 @@ import AddIcon from '@mui/icons-material/Add';
 import FolderSection from './FolderSection';
 import ContextMenu from '../../../components/ContextMenu';
 import ButtonCustom from '../../../components/buttons/ButtonCustom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getFolderDashboard } from '../../../api/user/dashboardAPI';
+import { toast } from 'react-toastify';
+import { postCreateDocument } from '../../../api/documents/createDocumentAPI';
+import FilesSection from './FilesSection';
 
 function Dashboard() {
     const { folder_hash } = useParams<{ folder_hash: string }>()
@@ -14,19 +17,29 @@ function Dashboard() {
     const [folders, setFolders] = useState<any[]>([])
     const [files, setFiles] = useState<any[]>([])
 
-    useEffect(() => {
-        console.log("Folder Hash:", folder_hash)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
+    const navigator = useNavigate()
+
+    useEffect(() => {
         const fetchCurrFolderContent = async () => {
+            console.log("Fetching content for current folder...")
+
+            if (isLoading) {
+                toast.info("Please wait while the current request is finished.")
+                return
+            }
+
+            setIsLoading(true)
+
             try {
                 console.log("Folder", folder_hash)
                 const resp = await getFolderDashboard({ folder_hash: folder_hash || "root" })
 
                 if (resp.status !== 200 || !('data' in resp)) {
                     console.error("Error fetching folder content:", 'data' in resp ? resp.data.message : "Unkown error.")
-                }
-
-                if (!('data' in resp)) {
+                    return
+                } else if (!('data' in resp)) {
                     console.error("Error fetching folder content: Response does not contain data.")
                     return
                 }
@@ -47,9 +60,9 @@ function Dashboard() {
                 setFiles(resp.data.data.files.map((item: any) => {
                     return {
                         name: item.name,
-                        file_hash: item.hash,
-                        file_type_id: item.type,
-                        file_type_name: item.type_name,
+                        hash: item.file_hash,
+                        type: item.type,
+                        type_name: item.type_name,
                         tags: item.tags.map((tag: any) => {
                             return {
                                 id: tag.id,
@@ -62,14 +75,61 @@ function Dashboard() {
             } catch (e) {
                 console.log("Error fetching folder content:", e)
             }
+
+            setIsLoading(false)
         }
 
         fetchCurrFolderContent()
+        console.log(files)
     }, [folder_hash])
 
-    const handleNewDocs = async () => {
-        console.log("New Docs Created")
 
+    const handleNewDocs = async () => {
+        console.log("Create new docs...")
+        if (isLoading) {
+            toast.info("Please wait while the current request is finished.")
+            return
+        }
+
+        setIsLoading(true)
+
+        try {
+            const resp = await postCreateDocument({
+                folder_hash: folder_hash || "root",
+                name: "New Document",
+                type: 1
+            })
+            console.log("Response from create document:", resp)
+
+            if (resp.status !== 200 || !('data' in resp)) {
+                console.error("Error creating document:", 'data' in resp ? resp.data.message : "Unkown error.")
+                return
+            }
+
+            toast.success("Document created successfully!")
+            setTimeout(() => {}, 2000)
+
+            navigator(`/document/${resp.data.doc_hash}`)
+
+        } catch (e) {
+            console.log("Error creating new document:", e)
+            toast.error("Error creating document. Please try again.")
+        }
+
+        setIsLoading(false)
+    }
+
+    const handleNewFolder = () => {
+        console.log("Creating new folder...")
+        if (isLoading) {
+            toast.info("Please wait while the current request is finished.")
+            return
+        }
+
+        setIsLoading(true)
+
+
+        setIsLoading(false)
     }
 
     // const contextMenuOptions = [
@@ -77,12 +137,6 @@ function Dashboard() {
     //     {id: 2, name: "New Sheet"},
     //     {id: 3, name: "Upload File"}
     // ]
-
-    // // const folders = [
-    // //     {id: 1, name: "Directory 1", url: "/folders/1", tags: []},
-    // //     {id: 2, name: "Directory 2", url: "/folders/2", tags: []},
-    // //     {id: 3, name: "Directory 3", url: "/folders/3", tags: []},
-    // // ]
 
     return (
         <>
@@ -96,8 +150,10 @@ function Dashboard() {
                         Files
                     </h1>
                     <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
+                    <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewDocs} />
 
                     <FolderSection folders={folders} />
+                    <FilesSection files={files} />
                 </div>
             </PageWrapper>
         </>

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from src.schemas import UserProfileResponse, UserUpdatePasswordRequest
 from src.services.user import service_update_password, service_user_profile
 from src.services.folder import service_new_folder, service_get_folder_content
-from src.utils import db_session, needs_auth
+from src.utils import db_session, needs_auth, get_root_folder_hash
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -38,12 +38,14 @@ def route_update_password(
 
 @users_router.get("/dashboard/{folder_hash}", status_code=200)
 def route_user_dashboard(folder_hash: str | None = None, auth: dict = Depends(needs_auth), db: Session = Depends(db_session.get_session)):
+    uuid=int(auth.get("sub"))
+
     if folder_hash == "root":
-        folder_hash = None
+        folder_hash = get_root_folder_hash(db=db, uuid=uuid)
 
     print("Hash", folder_hash)
     return service_get_folder_content(
-        uuid=int(auth.get("sub")),
+        uuid=uuid,
         db=db,
         folder_hash=folder_hash
     )
