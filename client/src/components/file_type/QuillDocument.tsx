@@ -1,5 +1,6 @@
 import Quill, { Delta } from 'quill'
 import React, { useCallback, useEffect, useRef } from 'react'
+import { ws_UpdateDocumentContent } from '../../api/documents/socket/wsUpdateDocumentContent'
 
 
 const OPTIONS = {
@@ -35,6 +36,8 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
     const quillRef = useRef<Quill | null>(null)
     const prevContentRef = useRef<Delta | null>(null)
 
+    const socketRef = useRef<WebSocket | null>(null)
+
 
     const initializeQuill = useCallback(() => {
         console.log("Quill init")
@@ -54,6 +57,10 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
             console.log("NEW: ", diff)
 
             console.log(quill.root.innerHTML)
+
+            if (socketRef.current) {
+                socketRef.current.send(JSON.stringify(diff))
+            }
         })
     }, [])
 
@@ -69,6 +76,17 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
         }
     }, [initializeQuill])
 
+    useEffect(() => {
+        if (!quillRef.current || !file_hash) return
+
+        console.log("HASH SOCKET", file_hash)
+        const currContent = quillRef.current.getContents()
+        socketRef.current = ws_UpdateDocumentContent({file_hash, diffs: currContent})
+
+        return () => {
+            socketRef.current?.close()
+        }
+    }, [file_hash])
 
     const handleExportClick = async () => {
         if (!quillRef.current) return

@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { postCreateDocument } from '../../../api/documents/createDocumentAPI';
+import { postCreateDocument } from '../../../api/documents/http/createDocumentAPI';
 import { getFolderDashboard } from '../../../api/user/dashboardAPI';
 import Navbar from '../../../components/Navbar';
 import ButtonCustom from '../../../components/buttons/ButtonCustom';

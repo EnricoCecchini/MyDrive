@@ -1,5 +1,5 @@
 import axios from "axios"
-import { applyAuthInterceptor, applyJSONHeaderInterceptor } from "../api"
+import { applyAuthInterceptor, applyJSONHeaderInterceptor } from "../../api"
 
 // Create auth API client
 const baseURL = import.meta.env.VITE_BASE_API_URL;
