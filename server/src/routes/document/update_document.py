@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 from src.schemas import DocumentUpdateContentRequest, DocumentUpdateNameRequest
 from src.services.documents import service_update_document, service_update_document_title
 from src.utils import db_session, needs_auth
 
 update_document_router = APIRouter()
+
+active_connections = {}
 
 
 @update_document_router.get("/test")
@@ -41,3 +43,25 @@ def update_document_rename_route(
         name=data.name,
         db=db
     )
+
+@update_document_router.websocket("/ws/document/{document_hash}")
+async def ws_update_document_content_route(
+    document_hash: str,
+    websocket: WebSocket,
+    auth: dict = Depends(needs_auth),
+    db: Session = Depends(db_session.get_session)
+):
+    await websocket.accept()
+
+    if document_hash not in active_connections:
+        active_connections[document_hash] = []
+
+    active_connections[document_hash].append(websocket)
+
+    try:
+        while True:
+            data = await websocket.receive_json()
+            print(data)
+
+    except WebSocketDisconnect:
+        active_connections[document_hash].remove(websocket)

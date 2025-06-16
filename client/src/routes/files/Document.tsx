@@ -1,46 +1,30 @@
-import { useEffect, useState } from 'react'
-import ReactQuill from 'react-quill-new'
+import { useEffect, useState } from 'react';
 import 'react-quill-new/dist/quill.snow.css';
-import TextInput from '../../components/inputs/TextInput'
-import Navbar from '../../components/Navbar'
-import PageWrapper from '../PageWrapper'
 import { useParams } from 'react-router-dom';
-import { getDocument } from '../../api/documents/getDocumentAPI';
 import { toast } from 'react-toastify';
-import ButtonCustom from '../../components/buttons/ButtonCustom';
-import './Document.css'
-import { putUpdateDocumentTitle } from '../../api/documents/updateDocumentTitleAPI';
+import { getDocument } from '../../api/documents/getDocumentAPI';
 import { putUpdateDocumentContent } from '../../api/documents/updateDocumentContentAPI';
+import { putUpdateDocumentTitle } from '../../api/documents/updateDocumentTitleAPI';
+import ButtonCustom from '../../components/buttons/ButtonCustom';
+import TextInput from '../../components/inputs/TextInput';
+import Navbar from '../../components/Navbar';
+import PageWrapper from '../PageWrapper';
+import './Document.css';
+
+import { Quill } from 'react-quill-new';
+import QuillDocument from '../../components/file_type/QuillDocument';
 
 
-const OPTIONS = {
-    toolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        ['blockquote', 'code-block'],
-        ['link', 'image', 'video', 'formula'],
-
-        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
-        [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-        [{ 'direction': 'rtl' }],                         // text direction
-
-        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'font': [] }],
-        [{ 'align': [] }],
-    ]
-}
+const Delta = Quill.import('delta');
 
 function Document() {
     const { file_hash } = useParams<{file_hash: string}>()
 
     const [title, setTitle] = useState<string>("")
-    const [content, setContent] = useState<string>("")
+    const [content, setContent] = useState(new Delta())
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
+
 
     useEffect(() => {
         const fetchDocument = async () => {
@@ -67,7 +51,7 @@ function Document() {
 
                 // Set document data
                 setTitle(resp.data.name)
-                setContent(resp.data.content || "")
+                setContent(new Delta(resp.data.content))
 
             } catch (e) {
                 console.error('Error fetching document content:', e)
@@ -80,13 +64,13 @@ function Document() {
         }
 
         fetchDocument()
-    }, [file_hash])
+    }, [])
 
     // Save document every 10 seconds
-    useEffect(() => {
+    // useEffect(() => {
 
 
-    }, [content])
+    // }, [content])
 
     const handleUpdateTitle = async () => {
         console.log("Updating document title...")
@@ -108,39 +92,39 @@ function Document() {
         }
     }
 
-    // Manual Save
-    const handleSave = async () => {
-        if (isLoading) {
-            toast.info("Please wait while the current request is finished.")
-            return
-        }
+    // // Manual Save
+    // const handleSave = async () => {
+    //     if (isLoading) {
+    //         toast.info("Please wait while the current request is finished.")
+    //         return
+    //     }
 
-        setIsLoading(true)
-        console.log("Saving document...")
+    //     setIsLoading(true)
+    //     console.log("Saving document...")
 
-        try {
-            // Update document title
-            const titleUpdateSucess = await handleUpdateTitle()
+    //     try {
+    //         // Update document title
+    //         const titleUpdateSucess = await handleUpdateTitle()
 
-            if (!titleUpdateSucess) {
-                return
-            }
+    //         if (!titleUpdateSucess) {
+    //             return
+    //         }
 
-            // Update document content
-            const resp = await putUpdateDocumentContent({hash: file_hash || "", content: content})
-            if (resp.status !== 200) {
-                console.error("Error renaming document:", 'data' in resp ? resp.data.message : "Unkown error.")
-                toast.error("Error renaming document.")
-                return
-            }
+    //         // Update document content
+    //         const resp = await putUpdateDocumentContent({hash: file_hash || "", content: content})
+    //         if (resp.status !== 200) {
+    //             console.error("Error renaming document:", 'data' in resp ? resp.data.message : "Unkown error.")
+    //             toast.error("Error renaming document.")
+    //             return
+    //         }
 
-            toast.success("Document saved successfully.")
-        } catch (e) {
-            console.error("Error saving document changes:", e)
-        }
+    //         toast.success("Document saved successfully.")
+    //     } catch (e) {
+    //         console.error("Error saving document changes:", e)
+    //     }
 
-        setIsLoading(false)
-    }
+    //     setIsLoading(false)
+    // }
 
     return (
         <PageWrapper>
@@ -158,15 +142,17 @@ function Document() {
                         </div>
 
                         <div className='w-full h-full flex flex-col items-center gap-y-4'>
-                            <ReactQuill
+                            {/* <ReactQuill
                                 theme="snow"
                                 value={content}
                                 onChange={setContent}
                                 modules={ OPTIONS }
                                 style={{height: "75vh", overflowY: "scroll"}}
-                            />
+                            /> */}
 
-                            <ButtonCustom label="Save" onClick={handleSave} />
+                            <QuillDocument readOnly={false} content={content} file_hash={file_hash} />
+
+                            {/* <ButtonCustom label="Save" onClick={handleSave} /> */}
                         </div>
                     </div>
             </div>

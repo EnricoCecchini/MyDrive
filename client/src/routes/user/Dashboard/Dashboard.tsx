@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import PageWrapper from '../../PageWrapper'
-import Navbar from '../../../components/Navbar'
 import AddIcon from '@mui/icons-material/Add';
-import FolderSection from './FolderSection';
-import ContextMenu from '../../../components/ContextMenu';
-import ButtonCustom from '../../../components/buttons/ButtonCustom';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getFolderDashboard } from '../../../api/user/dashboardAPI';
 import { toast } from 'react-toastify';
 import { postCreateDocument } from '../../../api/documents/createDocumentAPI';
-import FilesSection from './FilesSection';
+import { getFolderDashboard } from '../../../api/user/dashboardAPI';
+import Navbar from '../../../components/Navbar';
+import ButtonCustom from '../../../components/buttons/ButtonCustom';
 import TextInput from '../../../components/inputs/TextInput';
-import ButtonConfirm from '../../../components/buttons/ButtonConfirm';
+import PageWrapper from '../../PageWrapper';
+import FilesSection from './FilesSection';
+import FolderSection from './FolderSection';
 
 function Dashboard() {
     const { folder_hash } = useParams<{ folder_hash: string }>()
@@ -154,13 +152,33 @@ function Dashboard() {
                     onContextMenu={(e) => {e.preventDefault(); console.log("Context Menu Opened")}}
                 >
                     <div className="flex flex-col p-4 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl">
-                        <div className='flex flex-row w-fit h'>
-                            <TextInput
-                                name='name'
-                                placeholder='Folder Name'
-                                value={!folder_hash ? "root" : folderName}
+                        <div className='flex flex-row w-fit justify-center gap-x-2'>
 
-                            />
+                            {
+                                folder_hash ?
+                                <>
+                                    <TextInput
+                                        name='name'
+                                        placeholder='Folder Name'
+                                        value={folderName}
+
+                                    />
+                                    <button
+                                        className='h-full w-fit text-nowrap text-center p-2 px-4 text-white text-lg rounded-lg bg-blue-400 hover:bg-blue-600'
+                                    >
+                                        Update
+                                    </button>
+                                </> : <>
+                                    <>
+                                        <TextInput
+                                            name='name'
+                                            placeholder='Folder Name'
+                                            value="root"
+                                            disabled={true}
+                                        />
+                                    </>
+                                </>
+                            }
                         </div>
 
                         <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
