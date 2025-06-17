@@ -1,6 +1,8 @@
 import Quill, { Delta } from 'quill'
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ws_UpdateDocumentContent } from '../../api/documents/socket/wsUpdateDocumentContent'
+import { putUpdateDocumentContentOnExit, putUpdateDocumentContent } from '../../api/documents/http/updateDocumentContentAPI'
+import { toast } from 'react-toastify'
 
 
 const OPTIONS = {
@@ -39,6 +41,7 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
     const socketRef = useRef<WebSocket | null>(null)
 
     let contentDelta = new Delta()
+    const [autosaveDebounce, setAutosaveDebounce] = useState<boolean>(false)
 
     // Callback function to initialize Quill editor
     const initializeQuill = useCallback(() => {
@@ -114,10 +117,66 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
             quillRef.current?.updateContents(newDelta)
         };
 
+        socketRef.current.onclose = () => {
+            console.log("[WebSocket] Closing connection. Saving latest content.")
+            handleSaveOnExit()
+        }
+
+        // Handle autosave on exit page
+        window.addEventListener("beforeunload", handleSaveOnExit)
+
         return () => {
             socketRef.current?.close()
+            window.removeEventListener("beforeunload", handleSaveOnExit)
         }
     }, [file_hash])
+
+    // Handle saving current content on exit page
+    const handleSaveOnExit = useCallback(() => {
+        if (!quillRef.current || !editorRef.current || !file_hash) return
+
+        console.log("Saving latest content on exit.")
+        const content = quillRef.current.getText()
+        putUpdateDocumentContentOnExit({ hash: file_hash, content: content })
+    }, [file_hash])
+
+    const handleAutoSave = async () => {
+        if (!quillRef.current || !file_hash) return
+
+        console.log("Autosave")
+        try {
+            const currContent = quillRef.current.getText()
+            console.log(currContent)
+
+            const resp = await putUpdateDocumentContent({hash: file_hash, content: currContent})
+            if (resp.status !== 200) {
+                console.error("Error autosaving:", resp)
+                toast.error("Error autosaving.")
+            }
+
+        } catch (e) {
+            console.error("Error autosaving:", e)
+            toast.error("Error autosaving.")
+        }
+    }
+
+    // Auto-Save hook to store plaintext content every 10 seconds
+    useEffect(() => {
+        const autosaveInterval = setInterval(async () => {
+            if (autosaveDebounce) return
+
+            console.log("Autosaving")
+            setAutosaveDebounce(true)
+
+            await handleAutoSave()
+
+            setAutosaveDebounce(false)
+
+        }, 10000)
+
+        return () => clearInterval(autosaveInterval)
+
+    }, [])
 
 
     return (

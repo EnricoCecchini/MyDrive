@@ -27,7 +27,6 @@ function Document() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const isFirstRun = useRef<boolean>(true)
 
-
     useEffect(() => {
         const fetchDocument = async () => {
             if (isLoading) {
@@ -75,7 +74,7 @@ function Document() {
         }
 
         fetchDocument()
-    }, [])
+    }, [file_hash])
 
     // Debounce title 500ms after typing stops
     useEffect(() => {
