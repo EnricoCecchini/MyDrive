@@ -3,7 +3,6 @@ import 'react-quill-new/dist/quill.snow.css';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getDocument } from '../../api/documents/http/getDocumentAPI';
-import { putUpdateDocumentContent } from '../../api/documents/http/updateDocumentContentAPI';
 import { putUpdateDocumentTitle } from '../../api/documents/http/updateDocumentTitleAPI';
 import ButtonCustom from '../../components/buttons/ButtonCustom';
 import TextInput from '../../components/inputs/TextInput';
@@ -78,12 +77,6 @@ function Document() {
         fetchDocument()
     }, [])
 
-    // Save document every 10 seconds
-    // useEffect(() => {
-
-
-    // }, [content])
-
     const handleUpdateTitle = async () => {
         console.log("Updating document title...")
 
@@ -104,39 +97,31 @@ function Document() {
         }
     }
 
-    // // Manual Save
-    // const handleSave = async () => {
-    //     if (isLoading) {
-    //         toast.info("Please wait while the current request is finished.")
-    //         return
-    //     }
+    // Manual Save
+    const handleSave = async () => {
+        if (isLoading) {
+            toast.info("Please wait while the current request is finished.")
+            return
+        }
 
-    //     setIsLoading(true)
-    //     console.log("Saving document...")
+        setIsLoading(true)
+        console.log("Saving document...")
 
-    //     try {
-    //         // Update document title
-    //         const titleUpdateSucess = await handleUpdateTitle()
+        try {
+            // Update document title
+            const titleUpdateSucess = await handleUpdateTitle()
 
-    //         if (!titleUpdateSucess) {
-    //             return
-    //         }
+            if (!titleUpdateSucess) {
+                return
+            }
 
-    //         // Update document content
-    //         const resp = await putUpdateDocumentContent({hash: file_hash || "", content: content})
-    //         if (resp.status !== 200) {
-    //             console.error("Error renaming document:", 'data' in resp ? resp.data.message : "Unkown error.")
-    //             toast.error("Error renaming document.")
-    //             return
-    //         }
+            toast.success("Document saved successfully.")
+        } catch (e) {
+            console.error("Error saving document changes:", e)
+        }
 
-    //         toast.success("Document saved successfully.")
-    //     } catch (e) {
-    //         console.error("Error saving document changes:", e)
-    //     }
-
-    //     setIsLoading(false)
-    // }
+        setIsLoading(false)
+    }
 
     return (
         <PageWrapper>
@@ -154,17 +139,8 @@ function Document() {
                         </div>
 
                         <div className='w-full h-full flex flex-col items-center gap-y-4'>
-                            {/* <ReactQuill
-                                theme="snow"
-                                value={content}
-                                onChange={setContent}
-                                modules={ OPTIONS }
-                                style={{height: "75vh", overflowY: "scroll"}}
-                            /> */}
-
                             <QuillDocument readOnly={false} content={composedDelta} file_hash={file_hash} />
-
-                            {/* <ButtonCustom label="Save" onClick={handleSave} /> */}
+                            <ButtonCustom label="Save" onClick={handleSave} />
                         </div>
                     </div>
             </div>

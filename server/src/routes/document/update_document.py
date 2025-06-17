@@ -15,21 +15,6 @@ def test_route():
         "message": "Hello File"
     }
 
-@update_document_router.put("/update/{document_hash}", status_code=200)
-def update_document_content_route(
-    document_hash: str,
-    data: DocumentUpdateContentRequest,
-    auth: dict = Depends(needs_auth),
-    db: Session = Depends(db_session.get_session)
-):
-    # return service_update_document(
-    #     uuid=int(auth.get("sub")),
-    #     document_hash=document_hash,
-    #     content=data.content,
-    #     db=db
-    # )
-    return "Hello"
-
 @update_document_router.put("/rename/{document_hash}", status_code=200)
 def update_document_rename_route(
     document_hash: str,

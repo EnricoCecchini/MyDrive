@@ -40,6 +40,7 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
 
     let contentDelta = new Delta()
 
+    // Callback function to initialize Quill editor
     const initializeQuill = useCallback(() => {
         console.log("Quill init")
 
@@ -82,8 +83,8 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
 
             const currContent = quillRef.current.getContents()
             const diff = prevContentRef.current?.diff(currContent)
-            console.log("NEW: ", diff)
 
+            // Store diff in database and update content
             if (socketRef.current) {
                 socketRef.current.send(JSON.stringify(diff))
 
@@ -93,6 +94,7 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
         })
     }, [])
 
+    // Hook to handle broadcasted data from websocket
     useEffect(() => {
         if (!quillRef.current || !file_hash) return
 
@@ -101,11 +103,13 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
 
         if (!socketRef.current) return
 
+
         socketRef.current.onmessage = (event) => {
             console.log("[WebSocket] Message received. Parsing data");
             const data = JSON.parse(event.data);
             console.log("[WebSocket] Message received:", data);
 
+            // Update quill with new diff
             const newDelta = new Delta(data)
             quillRef.current?.updateContents(newDelta)
         };
