@@ -1,0 +1,10 @@
+#editor {
+  width: 100%;
+}
+
+#ql-editor {
+    width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}

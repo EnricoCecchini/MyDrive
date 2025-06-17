@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ws_UpdateDocumentContent } from '../../api/documents/socket/wsUpdateDocumentContent'
 import { putUpdateDocumentContentOnExit, putUpdateDocumentContent } from '../../api/documents/http/updateDocumentContentAPI'
 import { toast } from 'react-toastify'
+import './QuillDocument.css';
 
 
 const OPTIONS = {
@@ -119,6 +120,7 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
         };
 
         socketRef.current.onclose = () => {
+            // Return before saving on exit if page is loading for the first time.
             if (isFirstLoad.current) {
                 isFirstLoad.current = false
                 return
@@ -143,9 +145,11 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
 
         console.log("Saving latest content on exit.")
         const content = quillRef.current.getText()
+
         putUpdateDocumentContentOnExit({ hash: file_hash, content: content })
     }, [file_hash])
 
+    // Function to handle API request for periodic auto-save
     const handleAutoSave = async () => {
         if (!quillRef.current || !file_hash) return
 
@@ -186,9 +190,7 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
 
 
     return (
-        <>
-            <div id="editor" ref={editorRef} style={{ height: "60vh", width: "100%", borderWidth: "1px" }} />
-        </>
+        <div id="editor" ref={editorRef} />
     )
 }
 
