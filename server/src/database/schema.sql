@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 09, 2025 at 08:50 PM
+-- Generation Time: Jun 17, 2025 at 06:40 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -36,6 +36,20 @@ CREATE TABLE `file` (
   `content` longtext DEFAULT NULL,
   `type_id` int(10) UNSIGNED NOT NULL,
   `hash` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `file_diff`
+--
+
+CREATE TABLE `file_diff` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `file_id` int(10) UNSIGNED NOT NULL,
+  `content` longtext NOT NULL CHECK (json_valid(`content`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -134,6 +148,14 @@ ALTER TABLE `file`
   ADD KEY `file_relation_2` (`type_id`);
 
 --
+-- Indexes for table `file_diff`
+--
+ALTER TABLE `file_diff`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `file_diff_relation_1` (`file_id`),
+  ADD KEY `file_diff_relation_2` (`user_id`);
+
+--
 -- Indexes for table `file_tag`
 --
 ALTER TABLE `file_tag`
@@ -186,6 +208,12 @@ ALTER TABLE `file`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `file_diff`
+--
+ALTER TABLE `file_diff`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `file_tag`
 --
 ALTER TABLE `file_tag`
@@ -231,6 +259,13 @@ ALTER TABLE `user`
 ALTER TABLE `file`
   ADD CONSTRAINT `file_relation_1` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `file_relation_2` FOREIGN KEY (`type_id`) REFERENCES `file_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `file_diff`
+--
+ALTER TABLE `file_diff`
+  ADD CONSTRAINT `file_diff_relation_1` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `file_diff_relation_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `file_tag`
