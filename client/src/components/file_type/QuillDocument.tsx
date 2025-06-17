@@ -128,11 +128,7 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
 
     return (
         <>
-            <div>Quill Doc</div>
-
             <div id="editor" ref={editorRef} style={{ height: "60vh", width: "100%", borderWidth: "1px" }} />
-
-            <button onClick={handleExportClick}>Click</button>
         </>
     )
 }
