@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 from src.schemas import DocumentUpdateContentRequest, DocumentUpdateNameRequest
-from src.services.documents import service_update_document, service_update_document_title
+from src.services.documents import (service_update_document,
+                                    service_update_document_plaintext,
+                                    service_update_document_title)
 from src.utils import db_session, needs_auth, ws_needs_auth
 
 update_document_router = APIRouter()
@@ -27,6 +29,20 @@ def update_document_rename_route(
         uuid=int(auth.get("sub")),
         document_hash=document_hash,
         name=data.name,
+        db=db
+    )
+
+@update_document_router.put("/update/{document_hash}", status_code=200)
+def update_document_content_route(
+    document_hash: str,
+    data: DocumentUpdateContentRequest,
+    auth: dict = Depends(needs_auth),
+    db: Session = Depends(db_session.get_session)
+):
+    return service_update_document_plaintext(
+        uuid=int(auth.get("sub")),
+        document_hash=document_hash,
+        content=data.content,
         db=db
     )
 
