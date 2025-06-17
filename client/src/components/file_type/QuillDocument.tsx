@@ -37,8 +37,9 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
     const editorRef = useRef<HTMLDivElement>(null)
     const quillRef = useRef<Quill | null>(null)
     const prevContentRef = useRef<Delta | null>(null)
-
     const socketRef = useRef<WebSocket | null>(null)
+
+    const isFirstLoad = useRef<boolean>(true)
 
     let contentDelta = new Delta()
     const [autosaveDebounce, setAutosaveDebounce] = useState<boolean>(false)
@@ -118,6 +119,11 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
         };
 
         socketRef.current.onclose = () => {
+            if (isFirstLoad.current) {
+                isFirstLoad.current = false
+                return
+            }
+
             console.log("[WebSocket] Closing connection. Saving latest content.")
             handleSaveOnExit()
         }
