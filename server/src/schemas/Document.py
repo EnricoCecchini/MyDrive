@@ -18,4 +18,4 @@ class DocumentGetResponse(BaseModel):
     id: int
     name: str
     content: str
-    type:int
+    type: int

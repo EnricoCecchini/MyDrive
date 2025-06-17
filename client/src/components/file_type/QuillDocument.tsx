@@ -38,37 +38,18 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
 
     const socketRef = useRef<WebSocket | null>(null)
 
+    let contentDelta = new Delta()
+
     const initializeQuill = useCallback(() => {
         console.log("Quill init")
+
         if (!editorRef.current || quillRef.current) return
 
         const quill = new Quill(editorRef.current,  {theme: "snow", modules: {toolbar: OPTIONS.toolbar}, readOnly: readOnly })
-
         quillRef.current = quill
-
-        // Set initial value
-        quill.setContents(content)
-        prevContentRef.current = quill.getContents()
-
-        quill.on('text-change', (delta, oldContent, source) => {
-            // Check change does not come from user to avoid infinite loop
-            if (source !== 'user') return
-
-            const currContent = quill.getContents()
-            const diff = prevContentRef.current?.diff(currContent)
-            console.log("NEW: ", diff)
-
-            console.log(delta)
-
-            if (socketRef.current) {
-                socketRef.current.send(JSON.stringify(diff))
-
-                console.log("Returned content", socketRef.current)
-                prevContentRef.current = currContent
-            }
-        })
     }, [])
 
+    // Hook to initialize quill component
     useEffect(() => {
         if (quillRef.current || !editorRef.current) return
 
@@ -81,6 +62,37 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
         }
     }, [initializeQuill])
 
+    // Hook to watch for changes to content and set initial content
+    useEffect(() => {
+        if (quillRef.current && content) {
+            contentDelta = content
+
+            quillRef.current.setContents(contentDelta)
+            prevContentRef.current = quillRef.current.getContents()
+        }
+    }, [content])
+
+    // Hook to handle socket connection for diff updates
+    useEffect(() => {
+        if (!quillRef.current) return
+
+        quillRef.current.on("text-change", (delta, oldContent, source) =>{
+            // Check change does not come from user to avoid infinite loop
+            if (source !== 'user' || !quillRef.current) return
+
+            const currContent = quillRef.current.getContents()
+            const diff = prevContentRef.current?.diff(currContent)
+            console.log("NEW: ", diff)
+
+            if (socketRef.current) {
+                socketRef.current.send(JSON.stringify(diff))
+
+                console.log("Returned content", socketRef.current)
+                prevContentRef.current = currContent
+            }
+        })
+    }, [])
+
     useEffect(() => {
         if (!quillRef.current || !file_hash) return
 
@@ -90,16 +102,19 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
         if (!socketRef.current) return
 
         socketRef.current.onmessage = (event) => {
+            console.log("[WebSocket] Message received. Parsing data");
             const data = JSON.parse(event.data);
             console.log("[WebSocket] Message received:", data);
 
-            // Do something with the data, like updating state
+            const newDelta = new Delta(data)
+            quillRef.current?.updateContents(newDelta)
         };
 
         return () => {
             socketRef.current?.close()
         }
     }, [file_hash])
+
 
     const handleExportClick = async () => {
         if (!quillRef.current) return

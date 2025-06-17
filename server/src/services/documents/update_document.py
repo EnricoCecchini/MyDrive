@@ -1,16 +1,16 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from src.models import File, Folder
+from src.models import File, Folder, File_Diff
 
 
-def service_update_document(uuid: int, document_hash: str, content: str, db: Session) -> dict:
+def service_update_document(uuid: int, document_hash: str, content: dict, db: Session) -> dict:
     """
     Service func to update a document.
 
     Args:
         `uuid` (`int`) - ID of user.
         `document_hash` (`str`) - str of document to update.
-        `content` (`str`) - Updated content of document.
+        `content` (`dict`) - New diffs.
         `db` (`Session`) - SQLAlchemy session for querying.
         `name` (`str`) - Name of new document (Default is `New Document`).
 
@@ -28,10 +28,17 @@ def service_update_document(uuid: int, document_hash: str, content: str, db: Ses
             raise HTTPException(status_code=404, detail="File not found.")
 
         print("[cyan]Updating document content...[/cyan]")
-        file_update.content = content
+        # file_update.content = content
 
+        new_diff = File_Diff(
+            file_id=file_update.id,
+            user_id=uuid,
+            content=content
+        )
+
+        db.add(new_diff)
         db.commit()
-        db.refresh(file_update)
+        db.refresh(new_diff)
 
         return {
             "message": "Document created successfully.",

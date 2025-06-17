@@ -21,7 +21,8 @@ function Document() {
     const { file_hash } = useParams<{file_hash: string}>()
 
     const [title, setTitle] = useState<string>("")
-    const [content, setContent] = useState(new Delta())
+
+    let [composedDelta, setComposedDelta] = useState(new Delta())
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -49,9 +50,20 @@ function Document() {
                     return
                 }
 
+                console.log("File Diff Content:", resp.data.content, typeof(resp.data.content))
+
                 // Set document data
                 setTitle(resp.data.name)
-                setContent(new Delta(resp.data.content))
+
+                const parsedData = JSON.parse(resp.data.content)
+                let t_composed = new Delta
+
+                parsedData.map((d: any) => {
+                    t_composed = t_composed.compose(d)
+                })
+
+                console.log(parsedData)
+                setComposedDelta(t_composed)
 
             } catch (e) {
                 console.error('Error fetching document content:', e)
@@ -150,7 +162,7 @@ function Document() {
                                 style={{height: "75vh", overflowY: "scroll"}}
                             /> */}
 
-                            <QuillDocument readOnly={false} content={content} file_hash={file_hash} />
+                            <QuillDocument readOnly={false} content={composedDelta} file_hash={file_hash} />
 
                             {/* <ButtonCustom label="Save" onClick={handleSave} /> */}
                         </div>

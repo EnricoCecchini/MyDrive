@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from src.models import File, Folder
+from src.models import File, Folder, File_Diff
+import json
 
 
 def service_get_document(uuid: int, document_hash: str, db: Session) -> dict:
@@ -24,10 +25,14 @@ def service_get_document(uuid: int, document_hash: str, db: Session) -> dict:
             print("[red]Document not found...[/red]")
             raise HTTPException(status_code=404, detail="Document not found.")
 
+        diff_content = db.query(File_Diff).filter(File_Diff.file_id == result.id).all()
+
+        diffs_list = [d.content for d in diff_content]
+
         return {
             "id": result.id,
             "name": result.name,
-            "content": result.content or "",
+            "content": json.dumps(diffs_list),
             "type": result.type_id
         }
 
