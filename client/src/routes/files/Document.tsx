@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import 'react-quill-new/dist/quill.snow.css';
+import 'quill/dist/quill.snow.css';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getDocument } from '../../api/documents/http/getDocumentAPI';
 import { putUpdateDocumentTitle } from '../../api/documents/http/updateDocumentTitleAPI';
-import ButtonCustom from '../../components/buttons/ButtonCustom';
 import TextInput from '../../components/inputs/TextInput';
 import Navbar from '../../components/Navbar';
 import PageWrapper from '../PageWrapper';
 import './Document.css';
 
-import { Quill } from 'react-quill-new';
+import Quill from 'quill';
 import QuillDocument from '../../components/file_type/QuillDocument';
 
 
