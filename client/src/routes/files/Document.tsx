@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'react-quill-new/dist/quill.snow.css';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -20,10 +20,13 @@ function Document() {
     const { file_hash } = useParams<{file_hash: string}>()
 
     const [title, setTitle] = useState<string>("")
+    const [debouncedTitle, setDebouncedTitle] = useState<string>(title)
 
     let [composedDelta, setComposedDelta] = useState(new Delta())
 
+    // Util vars
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const isFirstRun = useRef<boolean>(true)
 
 
     useEffect(() => {
@@ -49,19 +52,17 @@ function Document() {
                     return
                 }
 
-                console.log("File Diff Content:", resp.data.content, typeof(resp.data.content))
-
                 // Set document data
                 setTitle(resp.data.name)
 
+                // Parse existing data to JSON and create temp composed delta
                 const parsedData = JSON.parse(resp.data.content)
                 let t_composed = new Delta
 
+                // Compose existing delta and set
                 parsedData.map((d: any) => {
                     t_composed = t_composed.compose(d)
                 })
-
-                console.log(parsedData)
                 setComposedDelta(t_composed)
 
             } catch (e) {
@@ -77,51 +78,53 @@ function Document() {
         fetchDocument()
     }, [])
 
-    const handleUpdateTitle = async () => {
-        console.log("Updating document title...")
+    // Debounce title 500ms after typing stops
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDebouncedTitle(title)
+        }, 500)
 
-        try {
-            // API request to update document title
-            const resp = await putUpdateDocumentTitle({hash: file_hash || "", name: title})
+        return () => clearTimeout(timeout)
+    }, [title])
 
-            if (resp.status !== 200) {
-                console.error("Error renaming document:", 'data' in resp ? resp.data.message : "Unkown error.")
-                toast.error("Error renaming document.")
-                return
-            }
 
-            return true
-        } catch (e) {
-            console.error("Error updating document title:", e)
-            toast.error("Error updating document title.")
-        }
-    }
-
-    // Manual Save
-    const handleSave = async () => {
-        if (isLoading) {
-            toast.info("Please wait while the current request is finished.")
+    useEffect(() => {
+        if (isFirstRun.current) {
+            isFirstRun.current = false
             return
         }
 
-        setIsLoading(true)
-        console.log("Saving document...")
-
-        try {
-            // Update document title
-            const titleUpdateSucess = await handleUpdateTitle()
-
-            if (!titleUpdateSucess) {
+        const handleUpdateTitle = async () => {
+            if (!file_hash || !debouncedTitle) return
+            else if (isLoading) {
+                toast.info("Please wait while the current request is finished.")
                 return
             }
 
-            toast.success("Document saved successfully.")
-        } catch (e) {
-            console.error("Error saving document changes:", e)
+            setIsLoading(true)
+
+            try {
+                console.log("Updating document title...")
+
+                // API request to update document title
+                const resp = await putUpdateDocumentTitle({hash: file_hash || "", name: debouncedTitle})
+
+                if (resp.status !== 200) {
+                    console.error("Error renaming document:", 'data' in resp ? resp.data.message : "Unkown error.")
+                    toast.error("Error renaming document.")
+                }
+
+            } catch (e) {
+                console.error("Error updating document title:", e)
+                toast.error("Error updating document title.")
+            }
+
+            setIsLoading(false)
         }
 
-        setIsLoading(false)
-    }
+        handleUpdateTitle()
+    }, [debouncedTitle])
+
 
     return (
         <PageWrapper>
@@ -132,7 +135,7 @@ function Document() {
                             <TextInput
                                 name='Document Title'
                                 value={title}
-                                onChange={(e) => setTitle(e.target.value)}
+                                onChange={(e) => {setTitle(e.target.value)}}
                                 placeholder='Untitled Document'
                                 type="text"
                             />
@@ -140,7 +143,6 @@ function Document() {
 
                         <div className='w-full h-full flex flex-col items-center gap-y-4'>
                             <QuillDocument readOnly={false} content={composedDelta} file_hash={file_hash} />
-                            <ButtonCustom label="Save" onClick={handleSave} />
                         </div>
                     </div>
             </div>

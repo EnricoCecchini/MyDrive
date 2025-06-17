@@ -120,12 +120,6 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
     }, [file_hash])
 
 
-    const handleExportClick = async () => {
-        if (!quillRef.current) return
-
-        const htmlContent = quillRef.current.root.innerHTML
-    }
-
     return (
         <>
             <div id="editor" ref={editorRef} style={{ height: "60vh", width: "100%", borderWidth: "1px" }} />
