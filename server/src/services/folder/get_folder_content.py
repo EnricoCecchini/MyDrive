@@ -46,7 +46,7 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
                     "name": folder.name,
                     "hash": folder.hash,
                     "date_created": folder.created_at,
-                    "tags": [{"id": tag.id, "name": tag.name} for tag in folder.tags]
+                    "tags": [{"id": tag.tag.id, "name": tag.tag.name} for tag in folder.tags]
                 } for folder in content_folders
             ],
             "files": [{
@@ -55,7 +55,7 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
                 "type": file.type.id,
                 "type_name": file.type.name,
                 "date_created": file.created_at,
-                "tags": [{"id": tag.id, "name": tag.name} for tag in file.tags]
+                "tags": [{"id": tag.tag.id, "name": tag.tag.name} for tag in file.tags]
             } for file in content_files]
         }
 
