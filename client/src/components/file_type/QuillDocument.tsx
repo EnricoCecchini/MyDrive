@@ -1,8 +1,6 @@
 import Quill, { Delta } from 'quill'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { ws_UpdateDocumentContent } from '../../api/documents/socket/wsUpdateDocumentContent'
-import useWebsocket from '../../hooks/useWebsocket'
-import { socketURL } from '../../api/documents/socket/_socketAPI'
 
 
 const OPTIONS = {
