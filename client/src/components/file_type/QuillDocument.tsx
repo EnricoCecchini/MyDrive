@@ -1,6 +1,8 @@
 import Quill, { Delta } from 'quill'
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ws_UpdateDocumentContent } from '../../api/documents/socket/wsUpdateDocumentContent'
+import useWebsocket from '../../hooks/useWebsocket'
+import { socketURL } from '../../api/documents/socket/_socketAPI'
 
 
 const OPTIONS = {
@@ -38,7 +40,6 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
 
     const socketRef = useRef<WebSocket | null>(null)
 
-
     const initializeQuill = useCallback(() => {
         console.log("Quill init")
         if (!editorRef.current || quillRef.current) return
@@ -52,14 +53,20 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
         prevContentRef.current = quill.getContents()
 
         quill.on('text-change', (delta, oldContent, source) => {
+            // Check change does not come from user to avoid infinite loop
+            if (source !== 'user') return
+
             const currContent = quill.getContents()
             const diff = prevContentRef.current?.diff(currContent)
             console.log("NEW: ", diff)
 
-            console.log(quill.root.innerHTML)
+            console.log(delta)
 
             if (socketRef.current) {
                 socketRef.current.send(JSON.stringify(diff))
+
+                console.log("Returned content", socketRef.current)
+                prevContentRef.current = currContent
             }
         })
     }, [])
@@ -79,9 +86,17 @@ export const QuillDocument: React.FC<QuillDocumentInterface> = ({ content, readO
     useEffect(() => {
         if (!quillRef.current || !file_hash) return
 
-        console.log("HASH SOCKET", file_hash)
         const currContent = quillRef.current.getContents()
         socketRef.current = ws_UpdateDocumentContent({file_hash, diffs: currContent})
+
+        if (!socketRef.current) return
+
+        socketRef.current.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("[WebSocket] Message received:", data);
+
+            // Do something with the data, like updating state
+        };
 
         return () => {
             socketRef.current?.close()

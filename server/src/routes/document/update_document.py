@@ -69,6 +69,8 @@ async def ws_update_document_content_route(
             data = await websocket.receive_json()
             print('Document Socket Data:', int(auth.get("sub")), data)
 
+            await websocket.send_json({1: "Hello"})
+
     except WebSocketDisconnect:
         print("[yellow]Closing websocket connection for document updates.[/yellow]")
         active_connections[document_hash].remove(websocket)
