@@ -6,7 +6,7 @@ interface GetFolderContentInterface {
 
 export const getFolderDashboard = async (data: GetFolderContentInterface) => {
     try {
-        const response = await usersApiClient.get(`/dashboard/${data.folder_hash}`)
+        const response = await usersApiClient.get(`/dashboard/folder/${data.folder_hash}`)
         return response
 
     } catch (e: any) {
