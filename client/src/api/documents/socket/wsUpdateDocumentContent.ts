@@ -22,9 +22,9 @@ export const ws_UpdateDocumentContent = ({ file_hash, diffs }: wsUpdateDocumentC
             console.log("[WebSocket] Connection opened.")
         }
 
-        socket.onclose = () => {
-            console.log("[WebSocket] Connection closed.")
-        }
+        // socket.onclose = () => {
+        //     console.log("[WebSocket] Connection closed.")
+        // }
 
         socket.onerror = (err) => {
             console.log("[WebSocket] Error:", err)

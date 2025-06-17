@@ -27,7 +27,6 @@ function Document() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const isFirstRun = useRef<boolean>(true)
 
-
     useEffect(() => {
         const fetchDocument = async () => {
             if (isLoading) {
@@ -75,7 +74,7 @@ function Document() {
         }
 
         fetchDocument()
-    }, [])
+    }, [file_hash])
 
     // Debounce title 500ms after typing stops
     useEffect(() => {
@@ -129,7 +128,7 @@ function Document() {
         <PageWrapper>
             <Navbar />
                 <div className='flex flex-col w-full h-full contain-content p-4 items-center'>
-                    <div className='items-start h-full'>
+                    <div className='items-start h-full w-[75%] px-8'>
                         <div className='w-fit items-start'>
                             <TextInput
                                 name='Document Title'

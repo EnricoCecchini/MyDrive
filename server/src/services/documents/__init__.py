@@ -3,3 +3,4 @@ from .new_document import service_new_document
 from .update_document import service_update_document
 from .update_document_title import service_update_document_title
 from .delete_document import service_delete_document
+from .update_document_plaintext import service_update_document_plaintext
