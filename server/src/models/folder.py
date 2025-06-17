@@ -32,6 +32,7 @@ class Folder(Base):
         tags (List[Folder_Tag]): Tags associated with the folder.
         children (List[Folder]): List of subfolders.
         parent (Optional[Folder]): Reference to the parent folder.
+        hash (str): Uinique hash for the folder, generated on creation.
     """
 
     __tablename__ = "folder"
@@ -44,6 +45,7 @@ class Folder(Base):
     name: Mapped[str] = mapped_column(String(255))
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     path: Mapped[Text] = mapped_column(Text, nullable=True)
+    hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=False, unique=True)
 
     # Relationships
     user: Mapped["User"] = relationship(back_populates="folders")

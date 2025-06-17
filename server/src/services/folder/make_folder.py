@@ -1,7 +1,9 @@
 import os
+
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from src.models import Folder
-from fastapi import HTTPException
+from src.utils import generate_hash
 
 
 def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str = None, path: str = None, description: str = None) -> dict[str, str]:
@@ -44,7 +46,7 @@ def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str 
             if not path_db:
                 raise HTTPException(status_code=404, detail="Parent folder not found.")
 
-            folder_path = os.path.join(path_db, name)
+            folder_path = os.path.join(path_db.path, name)
             folder_name = name
 
         print("Final folder path:", folder_path)
@@ -53,6 +55,8 @@ def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str 
         # Create folders
         os.makedirs(folder_path, exist_ok=True)
 
+        new_hash = generate_hash(Folder, db)
+
         print("Creating folder entry ind database...")
         # Register folders in database
         new_folder = Folder(
@@ -60,7 +64,8 @@ def service_new_folder(uuid: int, db: Session, parent_id: int = None, name: str 
             parent_id=parent_id,
             name=folder_name,
             description=description,
-            path=folder_path
+            path=folder_path,
+            hash=new_hash
         )
 
         print("Saving folder entry ind database...")

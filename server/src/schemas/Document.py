@@ -5,14 +5,17 @@ from pydantic import BaseModel
 
 class DocumentNewRequest(BaseModel):
     name: str
-    folder_id: int
+    folder_hash: str
     type: int
 
 class DocumentUpdateContentRequest(BaseModel):
     content: str
 
+class DocumentUpdateNameRequest(BaseModel):
+    name: str
+
 class DocumentGetResponse(BaseModel):
     id: int
     name: str
     content: str
-    type:int
+    type: int

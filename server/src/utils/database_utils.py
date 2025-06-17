@@ -1,9 +1,11 @@
 import os
+import uuid
 from typing import Generator
 
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import Session, sessionmaker
-from src.models import Base
+from src.models import Base, Folder
+from fastapi import HTTPException
 
 
 class DatabaseSession:
@@ -83,3 +85,57 @@ class DatabaseSession:
 
 
 db_session = DatabaseSession()
+
+
+def generate_hash(table: Base, db: Session) -> str:
+    """
+    Util func to generate a random hash to identify files and folders through the URL.
+
+    Returns:
+        `str` - Random hash string.
+    """
+
+    while True:
+        hash_value = uuid.uuid4().hex[:32]
+        exists = db.query(table).filter(table.hash == hash_value).first()
+        if not exists:
+            return hash_value
+
+
+def get_root_folder_hash(db: Session, uuid: int) -> str:
+    """
+    Util func to get root folder hash.
+
+    Args:
+        `db` (`Session`) - SQLAlchemy session.
+        `uuid` (`int`) - User ID.
+
+    Returns:
+        `str` - Hash for user root folder.
+    """
+
+    root = db.query(Folder).filter(Folder.user_id == uuid, Folder.parent_id.is_(None)).first()
+    if not root:
+        raise HTTPException(status_code=404, detail="Root folder not found.")
+
+    return root.hash
+
+
+def get_folder(db: Session, folder_hash: str, uuid: int) -> int:
+    """
+    Util func to get folder ID by it's hash.
+
+    Args:
+        `db` (`Session`) - SQLAlchemy session.
+        `folder_hash` (`str`) - Folder hash.
+        `uuid` (`int`) - User ID.
+
+    Returns:
+        `Folder` - Folder object.
+    """
+
+    folder = db.query(Folder).filter(Folder.hash == folder_hash, Folder.user_id == uuid).first()
+    if not folder:
+        raise HTTPException(status_code=404, detail="Folder not found.")
+
+    return folder

@@ -9,6 +9,7 @@ from .base import Base
 if TYPE_CHECKING:
     from .folder import Folder
     from .tag import Tag
+    from .file_diff import File_Diff
 
 
 class User(Base):
@@ -25,6 +26,7 @@ class User(Base):
         password_hash (str): Hashed password for secure authentication.
         folders (List[Folder]): Relationship to folders created by the user.
         tags (List[Tag]): Relationship to tags associated with the user.
+        diffs (List[File_Diff]): Relationship to file diffs created by the user.
     """
 
     __tablename__ = "user"
@@ -39,3 +41,4 @@ class User(Base):
     # Relationships
     folders: Mapped[List["Folder"]] = relationship(back_populates="user")
     tags: Mapped[List["Tag"]] = relationship(back_populates="user")
+    diffs: Mapped["File_Diff"] = relationship(back_populates="user")

@@ -8,8 +8,9 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .file_tag import File_Tag
-    from .folder import Folder
     from .file_type import File_Type
+    from .folder import Folder
+    from .file_diff import File_Diff
 
 
 class File(Base):
@@ -25,9 +26,11 @@ class File(Base):
         name (str): Name of the file.
         description (Optional[str]): Optional description of the file.
         content (Optional[str]): Optional content of the file.
+        type_id (int): Foreign key referencing the file type.
+        hash (str): Uinique hash for the file, generated on creation.
         folder (Folder): Relationship to the parent folder.
         tags (List[File_Tag]): Tags associated with the file.
-        type_id (int): Foreign key referencing the file type.
+        diffs (List[File_Diff]): Diffs associated with the file.
     """
 
     __tablename__ = "file"
@@ -40,8 +43,10 @@ class File(Base):
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     content: Mapped[Optional[Text]] = mapped_column(Text, nullable=True)
     type_id: Mapped[int] = mapped_column(ForeignKey("file_type.id"), nullable=False)
+    hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=False, unique=True)
 
     # Relationships
     folder: Mapped["Folder"] = relationship(back_populates="files")
     tags: Mapped[List["File_Tag"]] = relationship(back_populates="file", cascade="all, delete-orphan")
     type: Mapped["File_Type"] = relationship(back_populates="files")
+    diffs: Mapped["File_Diff"] = relationship(back_populates="file")

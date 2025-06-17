@@ -9,6 +9,7 @@ router = APIRouter(prefix="/api")
 router.include_router(users_router)
 router.include_router(auth_router)
 router.include_router(documents_router)
+router.include_router(folder_router)
 
 app.add_middleware(
     CORSMiddleware,
