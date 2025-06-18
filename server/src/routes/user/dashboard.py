@@ -28,13 +28,16 @@ def route_dashboard_dashboard(folder_hash: str | None = None, auth: dict = Depen
 def route_dashboard_search(
     text: Optional[str] = None,
     tags: Optional[List[str]] = Query(default=None),
+    limit: int = Query(default=20, ge=1),
+    offset: int = Query(default=0, ge=0),
     auth: dict = Depends(needs_auth),
     db: Session = Depends(db_session.get_session)
 ):
-    print("Search fields:", text, tags)
     return service_dashboard_search(
         uuid=int(auth.get("sub")),
         text=text,
         tags=tags,
+        limit=limit,
+        offset=offset,
         db=db
     )

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 17, 2025 at 06:40 AM
+-- Generation Time: Jun 18, 2025 at 09:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -35,7 +35,8 @@ CREATE TABLE `file` (
   `description` varchar(255) DEFAULT NULL,
   `content` longtext DEFAULT NULL,
   `type_id` int(10) UNSIGNED NOT NULL,
-  `hash` varchar(255) DEFAULT NULL
+  `hash` varchar(255) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -91,7 +92,8 @@ CREATE TABLE `folder` (
   `name` varchar(255) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   `path` text NOT NULL DEFAULT 'NULL',
-  `hash` varchar(255) NOT NULL
+  `hash` varchar(255) NOT NULL,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -189,7 +191,8 @@ ALTER TABLE `folder_tag`
 -- Indexes for table `tag`
 --
 ALTER TABLE `tag`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `tag_relation_1` (`user_id`);
 
 --
 -- Indexes for table `user`
@@ -287,6 +290,12 @@ ALTER TABLE `folder`
 ALTER TABLE `folder_tag`
   ADD CONSTRAINT `folder_tag_relation_1` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `folder_tag_relation_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tag`
+--
+ALTER TABLE `tag`
+  ADD CONSTRAINT `tag_relation_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

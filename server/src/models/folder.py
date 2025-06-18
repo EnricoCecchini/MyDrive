@@ -20,19 +20,20 @@ class Folder(Base):
     files, and associated tags.
 
     Attributes:
-        id (int): Primary key ID of the folder.
-        created_at (datetime): Timestamp when the folder was created.
-        user_id (int): Foreign key referencing the folder's owner.
-        parent_id (Optional[int]): ID of the parent folder (if any).
-        name (str): Name of the folder.
-        description (Optional[str]): Optional description for the folder.
-        path (Optional[str]): Computed path or hierarchy reference.
-        user (User): Relationship to the folder's owner.
-        files (List[File]): List of files contained within the folder.
-        tags (List[Folder_Tag]): Tags associated with the folder.
-        children (List[Folder]): List of subfolders.
-        parent (Optional[Folder]): Reference to the parent folder.
-        hash (str): Uinique hash for the folder, generated on creation.
+        - id (int): Primary key ID of the folder.
+        - created_at (datetime): Timestamp when the folder was created.
+        - user_id (int): Foreign key referencing the folder's owner.
+        - parent_id (Optional[int]): ID of the parent folder (if any).
+        - name (str): Name of the folder.
+        - description (Optional[str]): Optional description for the folder.
+        - path (Optional[str]): Computed path or hierarchy reference.
+        - hash (str): Uinique hash for the folder, generated on creation.
+        - updated_at (datetime): Timestamp for latest file update.
+        - user (User): Relationship to the folder's owner.
+        - files (List[File]): List of files contained within the folder.
+        - tags (List[Folder_Tag]): Tags associated with the folder.
+        - children (List[Folder]): List of subfolders.
+        - parent (Optional[Folder]): Reference to the parent folder.
     """
 
     __tablename__ = "folder"
@@ -46,6 +47,7 @@ class Folder(Base):
     description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     path: Mapped[Text] = mapped_column(Text, nullable=True)
     hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=False, unique=True)
+    updated_at: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP, default=func.now(), server_default=func.now(), nullable=False)
 
     # Relationships
     user: Mapped["User"] = relationship(back_populates="folders")
