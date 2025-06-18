@@ -35,8 +35,8 @@ def service_get_folder_content(uuid: int, db: Session, folder_hash: str = None) 
             raise HTTPException(status_code=404, detail="Folder not found.")
 
         print("Fetching folder content...")
-        content_folders = db.query(Folder).filter(Folder.parent_id ==curr_folder.id).order_by(desc(Folder.id)).all()
-        content_files = db.query(File).filter(File.folder_id == curr_folder.id).join(File_Type, File_Type.id == File.type_id).order_by(desc(File.id)).all()
+        content_folders = db.query(Folder).filter(Folder.parent_id ==curr_folder.id).order_by(desc(Folder.updated_at), desc(Folder.id)).all()
+        content_files = db.query(File).filter(File.folder_id == curr_folder.id).join(File_Type, File_Type.id == File.type_id).order_by(desc(File.updated_at), desc(File.id)).all()
 
         print(content_folders)
 
