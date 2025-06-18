@@ -28,6 +28,7 @@ class File(Base):
         content (Optional[str]): Optional content of the file.
         type_id (int): Foreign key referencing the file type.
         hash (str): Uinique hash for the file, generated on creation.
+        updated_at (datetime): Timestamp for latest file update.
         folder (Folder): Relationship to the parent folder.
         tags (List[File_Tag]): Tags associated with the file.
         diffs (List[File_Diff]): Diffs associated with the file.
@@ -44,6 +45,7 @@ class File(Base):
     content: Mapped[Optional[Text]] = mapped_column(Text, nullable=True)
     type_id: Mapped[int] = mapped_column(ForeignKey("file_type.id"), nullable=False)
     hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=False, unique=True)
+    updated_at: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP, default=func.now(), server_default=func.now(), nullable=False)
 
     # Relationships
     folder: Mapped["Folder"] = relationship(back_populates="files")
