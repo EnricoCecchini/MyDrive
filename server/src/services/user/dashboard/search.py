@@ -93,7 +93,7 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
         print("[cyan]Processing searched data[/cyan]")
         data = {
             "folders": [{
-                    "name": folder.name,
+                    "name": folder.name if folder.parent_id else "root",
                     "hash": folder.hash,
                     "date_created": folder.created_at,
                     "date_updated": folder.updated_at,

@@ -10,12 +10,14 @@ interface SearchInputInterface {
 const SearchInput: React.FC<SearchInputInterface> = ({ items, onChange, onClickItem }) => {
     const [isFocused, setIsFocused] = useState<boolean>(false)
 
+    const searchWidth = "[60%]"
+
     console.log("Items")
 
     return (
-        <div className='flex flex-row w-full justify-center'>
+        <div className='flex flex-row w-full justify-center relative'>
             <div
-                className={`flex flex-col w-[80%] rounded-3xl p-2 px-4 text-lg items-center transition-all gap-y-2 text-white ${
+                className={`flex flex-col w-${searchWidth} rounded-3xl p-2 px-4 text-lg items-center transition-all gap-y-2 text-white ${
                     isFocused ? 'ring-2 ring-indigo-800 bg-gray-500' : 'bg-gray-400'
                 }`}
             >
@@ -32,9 +34,9 @@ const SearchInput: React.FC<SearchInputInterface> = ({ items, onChange, onClickI
                     <span><SearchOutlinedIcon sx={{fontSize: "2rem"}} /></span>
                 </div>
 
-                <div className='flex flex-row w-full'>
+                <div className={`flex flex-row w-${searchWidth} absolute top-full z-50`}>
                     {isFocused && items && items.length > 0 && (
-                        <div className='flex flex-col w-full h-fit z-50 border rounded-xl p-2' onMouseDown={(e) => e.preventDefault()}>
+                        <div className='flex flex-col w-full max-h-[300px] overflow-auto border rounded-xl p-2 bg-gray-500' onMouseDown={(e) => e.preventDefault()}>
                             {
                                 items?.map((item, index) => {
                                     return (
