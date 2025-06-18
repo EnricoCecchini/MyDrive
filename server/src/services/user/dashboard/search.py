@@ -65,8 +65,8 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
             ))
             print(f"[green]{res_files.count()} total files selected after filtering...[/green]")
 
-        res_folders = res_folders.all()
-        res_files = res_files.all()
+        res_folders = res_folders.order_by(desc(Folder.created_at), desc(Folder.id)).all()
+        res_files = res_files.order_by(desc(File.created_at), desc(File.id)).all()
 
         data = {
             "folders": [{
