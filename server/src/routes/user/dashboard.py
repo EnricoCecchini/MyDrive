@@ -31,7 +31,6 @@ def route_dashboard_search(
     auth: dict = Depends(needs_auth),
     db: Session = Depends(db_session.get_session)
 ):
-    print("Search fields:", text, tags)
     return service_dashboard_search(
         uuid=int(auth.get("sub")),
         text=text,
