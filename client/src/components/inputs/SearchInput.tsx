@@ -17,7 +17,7 @@ const SearchInput: React.FC<SearchInputInterface> = ({ items, onChange, onClickI
     return (
         <div className='flex flex-row w-full justify-center relative'>
             <div
-                className={`flex flex-col w-${searchWidth} rounded-3xl p-2 px-4 text-lg items-center transition-all gap-y-2 text-white ${
+                className={`flex flex-col w-full lg:w-${searchWidth} rounded-3xl p-2 px-4 text-lg items-center transition-all gap-y-2 text-white ${
                     isFocused ? 'ring-2 ring-indigo-800 bg-gray-500' : 'bg-gray-400'
                 }`}
             >
@@ -34,7 +34,7 @@ const SearchInput: React.FC<SearchInputInterface> = ({ items, onChange, onClickI
                     <span><SearchOutlinedIcon sx={{fontSize: "2rem"}} /></span>
                 </div>
 
-                <div className={`flex flex-row w-${searchWidth} absolute top-full z-50`}>
+                <div className={`flex flex-row w-full lg:w-${searchWidth} absolute top-full z-50`}>
                     {isFocused && items && items.length > 0 && (
                         <div className='flex flex-col w-full max-h-[300px] overflow-auto border rounded-xl p-2 bg-gray-500' onMouseDown={(e) => e.preventDefault()}>
                             {

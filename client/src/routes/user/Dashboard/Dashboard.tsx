@@ -20,11 +20,9 @@ function Dashboard() {
     const [files, setFiles] = useState<any[]>([])
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [folderName, setFolderName] = useState<string>()
+    const [folderName, setFolderName] = useState<string>("")
 
     const searchField = useRef<string>("")
-    const [searchFoldersResults, setSearchFoldersResults] = useState<[any]>()
-    const [searchFilesResults, setSearchFilesResults] = useState<[any]>()
     const [searchResults, setSearchResults] = useState<[any]>()
 
     const searchTimeoutDebounce = useRef<any>(null)
@@ -219,9 +217,6 @@ function Dashboard() {
                 }
             })
 
-            setSearchFoldersResults(search_folders)
-            setSearchFilesResults(search_files)
-
             let tempRes = search_folders.concat(search_files)
             setSearchResults(tempRes)
         }
@@ -241,10 +236,10 @@ function Dashboard() {
             <PageWrapper>
                 <Navbar />
                 <div
-                    className='p-4'
+                    className='p-4 flex flex-row w-full'
                     onContextMenu={(e) => {e.preventDefault(); console.log("Context Menu Opened")}}
                 >
-                    <div className="flex flex-col p-4 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl">
+                    <div className="flex flex-col p-1 py-4 lg:px-8 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl item">
                         <SearchInput onChange={handleSearchDebounce} items={searchResults} onClickItem={handleClickOption} />
 
                         <div className='flex flex-row w-fit justify-center gap-x-2'>
@@ -256,8 +251,9 @@ function Dashboard() {
                                         name='name'
                                         placeholder='Folder Name'
                                         value={folderName}
-
+                                        onChange={(e) => {setFolderName(e.target.value)}}
                                     />
+
                                     <button
                                         className='h-full w-fit text-nowrap text-center p-2 px-4 text-white text-lg rounded-lg bg-blue-400 hover:bg-blue-600'
                                     >

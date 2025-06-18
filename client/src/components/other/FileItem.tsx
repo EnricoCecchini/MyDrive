@@ -25,12 +25,14 @@ const FileItem: React.FC<FileItemInterface> = (file) => {
 
     return (
         <div
-            className="flex flex-col w-[10rem] items-center border rounded-lg p-2 gap-y-2 hover:bg-gray-200"
+            className="flex-grow basis-[16rem] shrink-0 flex flex-col items-center border rounded-lg p-4 gap-y-2 hover:bg-gray-200"
             onClick={handleClick}
         >
-            {file.name}
-            {file.type ? fileTypeIcon[file.type].icon : <></>}
-            <span className='text-wrap'>Created: {file.date_created}</span>
+            <span className='break-words w-full text-start'>{file.name}</span>
+
+            <span>{file.type ? fileTypeIcon[file.type].icon : null}</span>
+
+            <span>Created: {file.date_created}</span>
         </div>
     )
 }
