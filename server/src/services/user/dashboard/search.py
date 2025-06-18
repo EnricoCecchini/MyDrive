@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session, aliased
 from src.models import File, File_Tag, Folder, Folder_Tag, Tag
 
 
-def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List[str]], db: Session) -> dict[str, str]:
+def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List[str]], limit: int, offset: int, db: Session) -> dict[str, str]:
     """
     Service func to search for files/folders.
 
@@ -14,6 +14,8 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
         - `uuid` (`int`) - User ID.
         - `text` (`str`) - Text to search.
         - `tags` (`Optional[str]`) - tags to search.
+        - `limit` (`int`) - Pagination limit.
+        - `offset` (`int`) - Pagination offset.
         - `db` (`Session`) - Session instance to query the database.
 
     Returns:
@@ -75,8 +77,15 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
             res_files = res_files.filter(TagFile.name.in_(tag_filter))
 
         print("[cyan]Fetching filtered data[/cyan]")
-        res_folders = res_folders.order_by(desc(Folder.created_at), desc(Folder.id)).distinct().all()
-        res_files = res_files.order_by(desc(File.created_at), desc(File.id)).distinct().all()
+        res_folders = res_folders.order_by(
+            desc(Folder.created_at),
+            desc(Folder.id)
+        ).distinct().limit(limit).offset(offset).all()
+
+        res_files = res_files.order_by(
+            desc(File.created_at),
+            desc(File.id)
+        ).distinct().limit(limit).offset(offset).all()
 
         print(f"[green]{len(res_folders)} total folders returned after filtering[/green]")
         print(f"[green]{len(res_files)} total files returned after filtering[/green]")
@@ -96,6 +105,7 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
                 "type": file.type.id,
                 "type_name": file.type.name,
                 "date_created": file.created_at,
+                "folder_name": file.folder.name,
                 "tags": [{"id": tag.tag.id, "name": tag.tag.name} for tag in file.tags]
             } for file in res_files]
         }
