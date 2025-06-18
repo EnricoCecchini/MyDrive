@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import 'quill/dist/quill.snow.css';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getDocument } from '../../api/documents/http/getDocumentAPI';

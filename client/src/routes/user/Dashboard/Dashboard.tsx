@@ -272,11 +272,15 @@ function Dashboard() {
                             }
                         </div>
 
-                        <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
-                        <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                        <div className='flex flex-row w-full items-start gap-x-2'>
+                            <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
+                            <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                        </div>
 
                         <FolderSection folders={folders} />
-                        <br />
+
+                        <hr className='my-4 bg-gray-600' />
+
                         <FilesSection files={files} />
                     </div>
                 </div>
