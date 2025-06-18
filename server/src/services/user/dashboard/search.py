@@ -11,13 +11,13 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
     Service func to search for files/folders.
 
     Args:
-        `uuid` (`int`) - User ID.
-        `text` (`str`) - Text to search.
-        `tags` (`Optional[str]`) - tags to search.
-        `db` (`Session`) - Session instance to query the database.
+        - `uuid` (`int`) - User ID.
+        - `text` (`str`) - Text to search.
+        - `tags` (`Optional[str]`) - tags to search.
+        - `db` (`Session`) - Session instance to query the database.
 
     Returns:
-        `dict[str]` - Dict with result of the query.
+        - `dict[str]` - Dict with result of the query.
     """
 
     print("[cyan]Beginning search query[/cyan]")
@@ -33,7 +33,6 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
             .outerjoin(TagFolder, TagFolder.id == Folder_Tag.tag_id)
             .filter(Folder.user_id == uuid)
         )
-        print(f"[cyan]{res_folders.count()} total folders selected before filtering...[/cyan]")
 
         print("[cyan]Selecting matching files[/cyan]")
         res_files = (
@@ -43,7 +42,9 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
             .join(File.folder)
             .filter(Folder.user_id == uuid)
         )
-        print(f"[green]{res_files.count()} total files selected before filtering...[/green]")
+
+        print(f"[green]{res_folders.count()} total folders returned before filtering[/green]")
+        print(f"[green]{res_files.count()} total files returned before filtering[/green]")
 
         if text:
             text = f"%{text}%"
@@ -54,7 +55,6 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
                 Folder.description.ilike(text),
                 TagFolder.name.ilike(text)
             ))
-            print(f"[green]{res_folders.count()} total folders selected after filtering...[/green]")
 
             print("[cyan]Begin filtering files.[/cyan]")
             res_files = res_files.filter(or_(
@@ -63,11 +63,25 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
                 File.content.ilike(text),
                 TagFile.name.ilike(text)
             ))
-            print(f"[green]{res_files.count()} total files selected after filtering...[/green]")
 
-        res_folders = res_folders.order_by(desc(Folder.created_at), desc(Folder.id)).all()
-        res_files = res_files.order_by(desc(File.created_at), desc(File.id)).all()
+        if tags:
+            print("[cyan]Begin filtering by tags.[/cyan]")
+            tag_filter = [tag.strip() for tag in tags]
 
+            print("[cyan]Filtering Folders by tags.[/cyan]")
+            res_folders = res_folders.filter(TagFolder.name.in_(tag_filter))
+
+            print("[cyan]Filtering Files by tags.[/cyan]")
+            res_files = res_files.filter(TagFile.name.in_(tag_filter))
+
+        print("[cyan]Fetching filtered data[/cyan]")
+        res_folders = res_folders.order_by(desc(Folder.created_at), desc(Folder.id)).distinct().all()
+        res_files = res_files.order_by(desc(File.created_at), desc(File.id)).distinct().all()
+
+        print(f"[green]{len(res_folders)} total folders returned after filtering[/green]")
+        print(f"[green]{len(res_files)} total files returned after filtering[/green]")
+
+        print("[cyan]Processing searched data[/cyan]")
         data = {
             "folders": [{
                     "name": folder.name,
