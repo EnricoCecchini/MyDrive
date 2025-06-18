@@ -96,6 +96,7 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
                     "name": folder.name,
                     "hash": folder.hash,
                     "date_created": folder.created_at,
+                    "date_updated": folder.updated_at,
                     "tags": [{"id": tag.tag.id, "name": tag.tag.name} for tag in folder.tags]
                 } for folder in res_folders
             ],
@@ -105,7 +106,8 @@ def service_dashboard_search(uuid: int, text: Optional[str], tags: Optional[List
                 "type": file.type.id,
                 "type_name": file.type.name,
                 "date_created": file.created_at,
-                "folder_name": file.folder.name,
+                "folder_name": file.folder.name if file.folder.parent_id else "root",
+                "date_updated": file.updated_at,
                 "tags": [{"id": tag.tag.id, "name": tag.tag.name} for tag in file.tags]
             } for file in res_files]
         }

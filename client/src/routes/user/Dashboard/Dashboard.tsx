@@ -23,8 +23,9 @@ function Dashboard() {
     const [folderName, setFolderName] = useState<string>()
 
     const searchField = useRef<string>("")
-    const [searchFoldersResults, setSearchFoldersResults] = useState<[]>([])
-    const [searchFilesResults, setSearchFilesResults] = useState<[]>([])
+    const [searchFoldersResults, setSearchFoldersResults] = useState<[any]>()
+    const [searchFilesResults, setSearchFilesResults] = useState<[any]>()
+    const [searchResults, setSearchResults] = useState<[any]>()
 
     const searchTimeoutDebounce = useRef<any>(null)
     const searchDebounce = useRef<string>(searchField.current)
@@ -188,6 +189,8 @@ function Dashboard() {
                     name: item.name,
                     hash: item.hash,
                     date_created: item.created_at,
+                    date_updated: item.date_updated,
+                    is_folder: true,
                     tags: item.tags.map((tag: any) => {
                         return {
                             id: tag.id,
@@ -205,6 +208,8 @@ function Dashboard() {
                     date_created: item.date_created,
                     type_name: item.type_name,
                     location: item.folder_name,
+                    date_updated: item.date_updated,
+                    is_folder: false,
                     tags: item.tags.map((tag: any) => {
                         return {
                             id: tag.id,
@@ -215,9 +220,20 @@ function Dashboard() {
             })
 
             setSearchFoldersResults(search_folders)
-            setSearchFilesResults(searchFilesResults)
+            setSearchFilesResults(search_files)
+
+            let tempRes = search_folders.concat(search_files)
+            setSearchResults(tempRes)
         }
         setIsLoading(false)
+    }
+
+    const handleClickOption = (e: any) => {
+        console.log("Clicked Item:", e)
+
+        if (e.is_folder) navigator(`/folders/${e.hash}`)
+        else if (e.type === 1) navigator(`/document/${e.hash}`)
+        else console.log("Clicked", e)
     }
 
     return (
@@ -229,7 +245,7 @@ function Dashboard() {
                     onContextMenu={(e) => {e.preventDefault(); console.log("Context Menu Opened")}}
                 >
                     <div className="flex flex-col p-4 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl">
-                        <SearchInput onChange={handleSearchDebounce} files={searchFilesResults} folders={searchFoldersResults} />
+                        <SearchInput onChange={handleSearchDebounce} items={searchResults} onClickItem={handleClickOption} />
 
                         <div className='flex flex-row w-fit justify-center gap-x-2'>
 
