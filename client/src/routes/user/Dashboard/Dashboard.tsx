@@ -12,6 +12,8 @@ import FilesSection from './FilesSection';
 import FolderSection from './FolderSection';
 import SearchInput from '../../../components/inputs/SearchInput';
 import { getSearchResults } from '../../../api/user/dashboard/getSearchAPI';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 function Dashboard() {
     const { folder_hash } = useParams<{ folder_hash: string }>()
@@ -29,6 +31,8 @@ function Dashboard() {
     const searchTimeoutDebounce = useRef<any>(null)
     const searchDebounce = useRef<string>(searchField.current)
     const prevSearchField = useRef<string>("")
+
+    const [showAsCard, setShowAsCard] = useState<boolean>(false)
 
     const navigator = useNavigate()
 
@@ -295,16 +299,25 @@ function Dashboard() {
                             }
                         </div>
 
-                        <div className='flex flex-row w-full items-start gap-x-2'>
-                            <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
-                            <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                        <div className='flex flex-row w-full justify-between'>
+                            <div className='flex flex-col'>
+                                <div className='flex flex-row w-full items-start gap-x-2'>
+                                    <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
+                                    <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                                </div>
+                            </div>
+                            <div className='flex flex-col'>
+                                <div className='flex flex-row w-full items-start gap-x-2'>
+                                    <ButtonCustom icon={showAsCard ? <FormatListBulletedIcon /> : <DashboardIcon />} label='Show' width='fit' onClick={() => {setShowAsCard(!showAsCard)}} />
+                                </div>
+                            </div>
                         </div>
 
-                        <FolderSection folders={folders} />
+                        <FolderSection folders={folders} showAsCard={showAsCard} />
 
                         <hr className='my-4 bg-gray-600' />
 
-                        <FilesSection files={files} />
+                        <FilesSection files={files} showAsCard={showAsCard} />
                     </div>
                 </div>
             </PageWrapper>

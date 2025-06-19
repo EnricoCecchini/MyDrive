@@ -9,7 +9,7 @@ interface FolderItemInterface {
     tags: Array<{id: number, name: string}>
 }
 
-const FolderItem: React.FC<FolderItemInterface> = ({id, name, hash, tags}) => {
+const FolderItemCard: React.FC<FolderItemInterface> = ({id, name, hash, tags}) => {
     const navigator = useNavigate();
 
     return (
@@ -23,4 +23,4 @@ const FolderItem: React.FC<FolderItemInterface> = ({id, name, hash, tags}) => {
     )
 }
 
-export default FolderItem
+export default FolderItemCard
