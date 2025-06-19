@@ -23,6 +23,7 @@ function Dashboard() {
     const [folderName, setFolderName] = useState<string>("")
 
     const searchField = useRef<string>("")
+    const [isLoadingSearch, setIsLoadingSearch] = useState<boolean>(false)
     const [searchResults, setSearchResults] = useState<[any]>()
 
     const searchTimeoutDebounce = useRef<any>(null)
@@ -46,12 +47,14 @@ function Dashboard() {
                 console.log("Folder", folder_hash)
                 const resp = await getFolderDashboard({ folder_hash: folder_hash || "root" })
 
+                let err = ""
                 if (resp.status !== 200 || !('data' in resp)) {
-                    console.error("Error fetching folder content:", 'data' in resp ? resp.data.message : "Unkown error.")
-                    return
+                    err = `${'data' in resp ? resp.data.message : "Unkown error."}`
+                    throw new Error(err)
+
                 } else if (!('data' in resp)) {
-                    console.error("Error fetching folder content: Response does not contain data.")
-                    return
+                    err = "Response does not contain data."
+                    throw new Error(err)
                 }
 
                 setFolders(resp.data.data.folders.map((item: any) => {
@@ -94,7 +97,6 @@ function Dashboard() {
         }
 
         fetchCurrFolderContent()
-        console.log("items", files)
     }, [folder_hash])
 
 
@@ -113,12 +115,11 @@ function Dashboard() {
                 name: "New Document",
                 type: 1
             })
-            console.log("Response from create document:", resp)
 
             if (resp.status !== 200 || !('data' in resp)) {
-                console.error("Error creating document:", 'data' in resp ? resp.data.message : "Unkown error.")
-                setIsLoading(false)
-                return
+                const err = `${'data' in resp ? resp.data.message : "Unkown error."}`
+                console.error(err)
+                throw new Error(err)
             }
 
             toast.success("Document created successfully!")
@@ -165,63 +166,85 @@ function Dashboard() {
 
     // Handle search API request
     const handleSearch = async () => {
-        if (isLoading) return
+        if (isLoadingSearch) return
 
-        setIsLoading(true)
+        setIsLoadingSearch(true)
 
-        // Check if searchDebounce === prevSearchField to only get new items
-        if(searchDebounce === prevSearchField) {
-            console.log("Getting more results")
-        } else {
-            console.log("Getting new results")
-            const resp = await getSearchResults({text: searchDebounce.current, tags: [], limit: 20, offset:0})
+        try {
+            // Check if searchDebounce === prevSearchField to only get new items
+            if(searchDebounce === prevSearchField) {
+                console.log("Getting more results")
+            } else {
+                console.log("Getting new results")
+                const resp = await getSearchResults({text: searchDebounce.current, tags: [], limit: 20, offset:0})
 
-            if (resp.status !== 200 || !('data' in resp)) {
-                console.error("Error getting search results:", 'data' in resp ? resp.data.message : "Unkown error.")
-                setIsLoading(false)
-                return
+                if (resp.status !== 200 || !('data' in resp)) {
+                    console.error("Error getting search results:", 'data' in resp ? resp.data.message : "Unkown error.")
+                    throw new Error("Error getting search results.")
+                }
+
+                // Parse retrieved items
+                const search_folders = resp.data.data.folders.map((item: any) => {
+                    return {
+                        name: item.name,
+                        hash: item.hash,
+                        date_created: item.created_at,
+                        date_updated: item.date_updated,
+                        is_folder: true,
+                        tags: item.tags.map((tag: any) => {
+                            return {
+                                id: tag.id,
+                                name: tag.name
+                            }
+                        })
+                    }
+                })
+
+                const search_files = resp.data.data.files.map((item: any) => {
+                    return {
+                        name: item.name,
+                        hash: item.file_hash,
+                        type: item.type,
+                        date_created: item.date_created,
+                        type_name: item.type_name,
+                        location: item.folder_name,
+                        date_updated: item.date_updated,
+                        is_folder: false,
+                        tags: item.tags.map((tag: any) => {
+                            return {
+                                id: tag.id,
+                                name: tag.name
+                            }
+                        })
+                    }
+                })
+
+                setTimeout(() => {}, 5000)
+
+                // Combine items in same list
+                let tempRes = search_folders.concat(search_files)
+                setSearchResults(tempRes)
             }
-
-            const search_folders = resp.data.data.folders.map((item: any) => {
-                return {
-                    name: item.name,
-                    hash: item.hash,
-                    date_created: item.created_at,
-                    date_updated: item.date_updated,
-                    is_folder: true,
-                    tags: item.tags.map((tag: any) => {
-                        return {
-                            id: tag.id,
-                            name: tag.name
-                        }
-                    })
-                }
-            })
-
-            const search_files = resp.data.data.files.map((item: any) => {
-                return {
-                    name: item.name,
-                    hash: item.file_hash,
-                    type: item.type,
-                    date_created: item.date_created,
-                    type_name: item.type_name,
-                    location: item.folder_name,
-                    date_updated: item.date_updated,
-                    is_folder: false,
-                    tags: item.tags.map((tag: any) => {
-                        return {
-                            id: tag.id,
-                            name: tag.name
-                        }
-                    })
-                }
-            })
-
-            let tempRes = search_folders.concat(search_files)
-            setSearchResults(tempRes)
+        } catch (e) {
+            console.error("Error on search:", e)
+            toast.error("Error searching for items.")
         }
-        setIsLoading(false)
+
+        setIsLoadingSearch(false)
     }
+
+    const [showSearchLoadingIcon, setShowSearchLoadingIcon] = useState<boolean>(true)
+
+    // Debounce Search loading icon
+    useEffect(() => {
+        console.log("Debouncing load search")
+        if (isLoadingSearch) {
+            const t = setTimeout(() => setShowSearchLoadingIcon(true), 150)
+            return () => clearTimeout(t)
+        } else {
+            setShowSearchLoadingIcon(false)
+        }
+    }, [isLoadingSearch])
 
     const handleClickOption = (e: any) => {
         console.log("Clicked Item:", e)
@@ -240,7 +263,7 @@ function Dashboard() {
                     onContextMenu={(e) => {e.preventDefault(); console.log("Context Menu Opened")}}
                 >
                     <div className="flex flex-col p-1 py-4 lg:px-8 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl item">
-                        <SearchInput onChange={handleSearchDebounce} items={searchResults} onClickItem={handleClickOption} />
+                        <SearchInput onChange={handleSearchDebounce} items={searchResults} onClickItem={handleClickOption} isLoadingSearch={showSearchLoadingIcon} />
 
                         <div className='flex flex-row w-fit justify-center gap-x-2'>
 

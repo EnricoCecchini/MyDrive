@@ -1,18 +1,17 @@
 import React, { useState } from 'react'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 
 interface SearchInputInterface {
     onChange: React.ChangeEventHandler<HTMLInputElement>
     items?: [any] | null
     onClickItem: (item: any) => void
+    isLoadingSearch: boolean
 }
 
-const SearchInput: React.FC<SearchInputInterface> = ({ items, onChange, onClickItem }) => {
+const SearchInput: React.FC<SearchInputInterface> = ({ items, onChange, onClickItem, isLoadingSearch }) => {
     const [isFocused, setIsFocused] = useState<boolean>(false)
-
     const searchWidth = "[60%]"
-
-    console.log("Items")
 
     return (
         <div className='flex flex-row w-full justify-center relative'>
@@ -31,7 +30,8 @@ const SearchInput: React.FC<SearchInputInterface> = ({ items, onChange, onClickI
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                     />
-                    <span><SearchOutlinedIcon sx={{fontSize: "2rem"}} /></span>
+                    {isLoadingSearch ? <span className='animate-spin'><HourglassBottomIcon sx={{fontSize: "2rem"}} /></span> : <span><SearchOutlinedIcon sx={{fontSize: "2rem"}} /></span>}
+
                 </div>
 
                 <div className={`flex flex-row w-full lg:w-${searchWidth} absolute top-full z-50`}>
