@@ -1,11 +1,48 @@
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import BorderAllIcon from '@mui/icons-material/BorderAll';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
-const lg_size = "8rem"
-const md_size = "6rem"
-const sm_size = "3rem"
+const sizeMap = {
+  lg: "8rem",
+  md: "6rem",
+  sm: "3rem"
+};
 
-export const FileTypeIcon: Record<number, any> = {
-    1: {icon_lg: <TextSnippetIcon  sx={{fontSize: lg_size}} />, icon_sm: <TextSnippetIcon  sx={{fontSize: sm_size}} />, name: "document"},
-    2: {icon_lg: <BorderAllIcon  sx={{fontSize: lg_size}} />, icon_sm: <BorderAllIcon  sx={{fontSize: sm_size}} />, name: "sheet"}
+export const FileTypeIcon = (
+    typeID: number,
+    size: "lg" | "md" | "sm" | string = "md"
+) => {
+    let fontSize
+
+    switch (size) {
+        case "lg":
+            fontSize = sizeMap.lg
+            break
+        case "md":
+            fontSize = sizeMap.md
+            break
+        case "sm":
+            fontSize = sizeMap.sm
+            break
+        default:
+            fontSize = size ? size : sizeMap.md
+    }
+
+    switch (typeID) {
+        case 1:
+            return {
+                icon: <TextSnippetIcon sx={{ fontSize: fontSize }} />,
+                name: "document"
+            };
+        case 2:
+            return {
+                icon: <BorderAllIcon sx={{ fontSize: fontSize }} />,
+                name: "sheet"
+            };
+        default:
+            return {
+                icon: <TextSnippetIcon sx={{ fontSize: fontSize }} />,
+                name: "document"
+            };
+    }
+
 }

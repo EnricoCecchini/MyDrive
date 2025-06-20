@@ -6,6 +6,10 @@ import type { FileItemInterface } from './FileItemInterface';
 
 
 const FileItemCard: React.FC<FileItemInterface> = ({name, type, hash, date_created, handleClick}) => {
+    const handleIcon = () => {
+        const iconType = FileTypeIcon(type, "lg")
+        return iconType.icon
+    }
 
     return (
         <div
@@ -14,7 +18,7 @@ const FileItemCard: React.FC<FileItemInterface> = ({name, type, hash, date_creat
         >
             <span className='break-words w-full text-start'>{name}</span>
 
-            <span>{type ? FileTypeIcon[type].icon_lg : null}</span>
+            <span>{type ? handleIcon() : null}</span>
 
             <span>Created: {date_created}</span>
         </div>

@@ -299,7 +299,7 @@ function Dashboard() {
                             }
                         </div>
 
-                        <div className='flex flex-row w-full justify-between'>
+                        <div className='flex flex-col md:flex-row md:items-center w-full justify-between gap-y-2'>
                             <div className='flex flex-col'>
                                 <div className='flex flex-row w-full items-start gap-x-2'>
                                     <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
@@ -307,7 +307,7 @@ function Dashboard() {
                                 </div>
                             </div>
                             <div className='flex flex-col'>
-                                <div className='flex flex-row w-full items-start gap-x-2'>
+                                <div className='flex flex-row w-full justify-end gap-x-2'>
                                     <ButtonCustom icon={showAsCard ? <FormatListBulletedIcon /> : <DashboardIcon />} label='Show' width='fit' onClick={() => {setShowAsCard(!showAsCard)}} />
                                 </div>
                             </div>

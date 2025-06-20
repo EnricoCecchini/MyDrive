@@ -20,8 +20,10 @@ const FilesSection: React.FC<FilesSectionInterface> = ({ files, showAsCard }) =>
     const navigator = useNavigate()
 
     const handleClick = (type: number, hash: string) => {
+        const doc_type = FileTypeIcon(type, "lg")
+
         console.log("Clicked", hash)
-        navigator(`/${FileTypeIcon[type].name}/${hash}`)
+        navigator(`/${doc_type.name}/${hash}`)
     }
 
     console.log("Files", files)
