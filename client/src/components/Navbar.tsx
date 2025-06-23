@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/AuthProvider';
+import { handleGlobalLogout, useAuth } from '../auth/AuthProvider';
 import { toast } from 'react-toastify';
 import CloseIcon from '@mui/icons-material/Close';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
@@ -10,11 +10,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
-    const {is_authenticated, logout} = useAuth()
+    const {is_authenticated} = useAuth()
     const navigator = useNavigate()
 
     const handleLogout = () => {
-        logout()
+        handleGlobalLogout()
         toast.info("Logged out.")
 
         setTimeout(() => {}, 2000);

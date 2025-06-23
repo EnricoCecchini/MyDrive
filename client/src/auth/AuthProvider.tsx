@@ -21,6 +21,9 @@ export const useAuth = () => {
     return context;
 }
 
+// Store a reference to the logout function
+let externalLogout: (() => void) | null = null;
+
 // AuthProvider to wrap Routes that need Authentication
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // Fetch token from localstorage.
@@ -50,6 +53,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }, [token]);
 
+    // Point externalLogout to the logout func
+    useEffect(() => {
+        externalLogout = logout
+    }, [])
+
     // Wrap children in Auth Provider
     return (
       <AuthContext.Provider value={{ is_authenticated, login, logout, token }}>
@@ -58,6 +66,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 }
 
+// External Auth Functions
 export const getAuthToken = (): string | null => {
     return localStorage.getItem("authToken")
+}
+
+export const handleGlobalLogout = () => {
+    // Call the logout function if it exists
+    if (externalLogout) externalLogout()
 }
