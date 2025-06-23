@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from "axios"
-import { getAuthToken } from "../auth/AuthProvider"
+import { getAuthToken, handleGlobalLogout, useAuth } from "../auth/AuthProvider"
 
 
 // Get API URL or use default
@@ -47,8 +47,24 @@ export const applyJSONHeaderInterceptor = (client: AxiosInstance) => {
     return client
 }
 
+export const applyExpiredJWTInterceptor = (client: AxiosInstance) => {
+    client.interceptors.response.use(
+        // Get response
+        response => response,
+        error => {
+            console.log("RESP ERROR", error.status)
+            // Check status code for expired JWT auth token
+            if (error.response?.status === 401) {
+                handleGlobalLogout()
+            }
+            return Promise.reject(error)
+        }
+    )
+}
+
 // Apply interceptor to base apiClient
 applyAuthInterceptor(apiClient);
 applyJSONHeaderInterceptor(apiClient);
+applyExpiredJWTInterceptor(apiClient)
 
 export default apiClient;

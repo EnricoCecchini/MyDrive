@@ -9,18 +9,18 @@ interface FolderItemInterface {
     tags: Array<{id: number, name: string}>
 }
 
-const FolderItem: React.FC<FolderItemInterface> = ({id, name, hash, tags}) => {
+const FolderItemCard: React.FC<FolderItemInterface> = ({id, name, hash, tags}) => {
     const navigator = useNavigate();
 
     return (
         <div
-            className='flex flex-col w-[10rem] items-center hover:bg-gray-200 border rounded-lg'
+            className="flex-grow basis-[16rem] shrink-0 flex flex-row items-center border rounded-lg p-4 gap-x-2 gap-y-2 hover:bg-gray-200"
             onClick={() => navigator(`/folders/${hash}`)}
         >
-            <FolderIcon sx={{fontSize: "8rem"}} />
+            <FolderIcon sx={{fontSize: "2rem"}} />
             <span>{name}</span>
         </div>
     )
 }
 
-export default FolderItem
+export default FolderItemCard

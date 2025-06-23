@@ -1,4 +1,4 @@
-import usersApiClient from "./_userAPI"
+import usersApiClient from "../_userAPI"
 
 interface GetFolderContentInterface {
     folder_hash: string | null

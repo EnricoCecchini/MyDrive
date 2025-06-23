@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import 'quill/dist/quill.snow.css';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getDocument } from '../../api/documents/http/getDocumentAPI';
@@ -128,7 +128,7 @@ function Document() {
         <PageWrapper>
             <Navbar />
                 <div className='flex flex-col w-full h-full contain-content p-4 items-center'>
-                    <div className='items-start h-full w-[75%] px-8'>
+                    <div className='items-start h-full w-full px-2 lg:w-[75%] lg:px-8'>
                         <div className='w-fit items-start'>
                             <TextInput
                                 name='Document Title'

@@ -1,15 +1,19 @@
 import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { postCreateDocument } from '../../../api/documents/http/createDocumentAPI';
-import { getFolderDashboard } from '../../../api/user/dashboardAPI';
+import { getFolderDashboard } from '../../../api/user/dashboard/getDashboardAPI';
 import Navbar from '../../../components/Navbar';
 import ButtonCustom from '../../../components/buttons/ButtonCustom';
 import TextInput from '../../../components/inputs/TextInput';
 import PageWrapper from '../../PageWrapper';
 import FilesSection from './FilesSection';
 import FolderSection from './FolderSection';
+import SearchInput from '../../../components/inputs/SearchInput';
+import { getSearchResults } from '../../../api/user/dashboard/getSearchAPI';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 function Dashboard() {
     const { folder_hash } = useParams<{ folder_hash: string }>()
@@ -18,7 +22,17 @@ function Dashboard() {
     const [files, setFiles] = useState<any[]>([])
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [folderName, setFolderName] = useState<string>()
+    const [folderName, setFolderName] = useState<string>("")
+
+    const searchField = useRef<string>("")
+    const [isLoadingSearch, setIsLoadingSearch] = useState<boolean>(false)
+    const [searchResults, setSearchResults] = useState<[any]>()
+
+    const searchTimeoutDebounce = useRef<any>(null)
+    const searchDebounce = useRef<string>(searchField.current)
+    const prevSearchField = useRef<string>("")
+
+    const [showAsCard, setShowAsCard] = useState<boolean>(false)
 
     const navigator = useNavigate()
 
@@ -37,12 +51,14 @@ function Dashboard() {
                 console.log("Folder", folder_hash)
                 const resp = await getFolderDashboard({ folder_hash: folder_hash || "root" })
 
+                let err = ""
                 if (resp.status !== 200 || !('data' in resp)) {
-                    console.error("Error fetching folder content:", 'data' in resp ? resp.data.message : "Unkown error.")
-                    return
+                    err = `${'data' in resp ? resp.data.message : "Unkown error."}`
+                    throw new Error(err)
+
                 } else if (!('data' in resp)) {
-                    console.error("Error fetching folder content: Response does not contain data.")
-                    return
+                    err = "Response does not contain data."
+                    throw new Error(err)
                 }
 
                 setFolders(resp.data.data.folders.map((item: any) => {
@@ -85,7 +101,6 @@ function Dashboard() {
         }
 
         fetchCurrFolderContent()
-        console.log(files)
     }, [folder_hash])
 
 
@@ -104,11 +119,11 @@ function Dashboard() {
                 name: "New Document",
                 type: 1
             })
-            console.log("Response from create document:", resp)
 
             if (resp.status !== 200 || !('data' in resp)) {
-                console.error("Error creating document:", 'data' in resp ? resp.data.message : "Unkown error.")
-                return
+                const err = `${'data' in resp ? resp.data.message : "Unkown error."}`
+                console.error(err)
+                throw new Error(err)
             }
 
             toast.success("Document created successfully!")
@@ -137,21 +152,123 @@ function Dashboard() {
         setIsLoading(false)
     }
 
-    // const contextMenuOptions = [
-    //     {id: 1, name: "New Docs"},
-    //     {id: 2, name: "New Sheet"},
-    //     {id: 3, name: "Upload File"}
-    // ]
+    // Handle debounce for searchField
+    const handleSearchDebounce = async (e: any) => {
+        console.log("Searching: ", searchDebounce.current, isLoading)
+        searchField.current = e.target.value
+
+        if (searchTimeoutDebounce.current) {
+            clearTimeout(searchTimeoutDebounce.current)
+        }
+
+        searchTimeoutDebounce.current = setTimeout(async () => {
+            console.log("Debouncing searchField")
+            searchDebounce.current = searchField.current
+            await handleSearch()
+        }, 500)
+    }
+
+    // Handle search API request
+    const handleSearch = async () => {
+        if (isLoadingSearch) return
+
+        setIsLoadingSearch(true)
+
+        try {
+            // Check if searchDebounce === prevSearchField to only get new items
+            if(searchDebounce === prevSearchField) {
+                console.log("Getting more results")
+            } else {
+                console.log("Getting new results")
+                const resp = await getSearchResults({text: searchDebounce.current, tags: [], limit: 20, offset:0})
+
+                if (resp.status !== 200 || !('data' in resp)) {
+                    console.error("Error getting search results:", 'data' in resp ? resp.data.message : "Unkown error.")
+                    throw new Error("Error getting search results.")
+                }
+
+                // Parse retrieved items
+                const search_folders = resp.data.data.folders.map((item: any) => {
+                    return {
+                        name: item.name,
+                        hash: item.hash,
+                        date_created: item.created_at,
+                        date_updated: item.date_updated,
+                        is_folder: true,
+                        tags: item.tags.map((tag: any) => {
+                            return {
+                                id: tag.id,
+                                name: tag.name
+                            }
+                        })
+                    }
+                })
+
+                const search_files = resp.data.data.files.map((item: any) => {
+                    return {
+                        name: item.name,
+                        hash: item.file_hash,
+                        type: item.type,
+                        date_created: item.date_created,
+                        type_name: item.type_name,
+                        location: item.folder_name,
+                        date_updated: item.date_updated,
+                        is_folder: false,
+                        tags: item.tags.map((tag: any) => {
+                            return {
+                                id: tag.id,
+                                name: tag.name
+                            }
+                        })
+                    }
+                })
+
+                setTimeout(() => {}, 5000)
+
+                // Combine items in same list
+                let tempRes = search_folders.concat(search_files)
+                setSearchResults(tempRes)
+            }
+        } catch (e) {
+            console.error("Error on search:", e)
+            toast.error("Error searching for items.")
+        }
+
+        setIsLoadingSearch(false)
+    }
+
+    const [showSearchLoadingIcon, setShowSearchLoadingIcon] = useState<boolean>(true)
+
+    // Debounce Search loading icon
+    useEffect(() => {
+        console.log("Debouncing load search")
+        if (isLoadingSearch) {
+            const t = setTimeout(() => setShowSearchLoadingIcon(true), 150)
+            return () => clearTimeout(t)
+        } else {
+            setShowSearchLoadingIcon(false)
+        }
+    }, [isLoadingSearch])
+
+    const handleClickOption = (e: any) => {
+        console.log("Clicked Item:", e)
+
+        if (e.is_folder) navigator(`/folders/${e.hash}`)
+        else if (e.type === 1) navigator(`/document/${e.hash}`)
+        else console.log("Clicked", e)
+    }
 
     return (
         <>
             <PageWrapper>
                 <Navbar />
                 <div
-                    className='p-4'
+                    className='p-4 flex flex-row w-full'
                     onContextMenu={(e) => {e.preventDefault(); console.log("Context Menu Opened")}}
                 >
-                    <div className="flex flex-col p-4 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl">
+                    <div className="flex flex-col p-1 py-4 lg:px-8 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl item">
+                        <SearchInput onChange={handleSearchDebounce} items={searchResults} onClickItem={handleClickOption} isLoadingSearch={showSearchLoadingIcon} />
+
                         <div className='flex flex-row w-fit justify-center gap-x-2'>
 
                             {
@@ -161,8 +278,9 @@ function Dashboard() {
                                         name='name'
                                         placeholder='Folder Name'
                                         value={folderName}
-
+                                        onChange={(e) => {setFolderName(e.target.value)}}
                                     />
+
                                     <button
                                         className='h-full w-fit text-nowrap text-center p-2 px-4 text-white text-lg rounded-lg bg-blue-400 hover:bg-blue-600'
                                     >
@@ -181,12 +299,25 @@ function Dashboard() {
                             }
                         </div>
 
-                        <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
-                        <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                        <div className='flex flex-col md:flex-row md:items-center w-full justify-between gap-y-2'>
+                            <div className='flex flex-col'>
+                                <div className='flex flex-row w-full items-start gap-x-2'>
+                                    <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
+                                    <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                                </div>
+                            </div>
+                            <div className='flex flex-col'>
+                                <div className='flex flex-row w-full justify-end gap-x-2'>
+                                    <ButtonCustom icon={showAsCard ? <FormatListBulletedIcon /> : <DashboardIcon />} label='Show' width='fit' onClick={() => {setShowAsCard(!showAsCard)}} />
+                                </div>
+                            </div>
+                        </div>
 
-                        <FolderSection folders={folders} />
-                        <br />
-                        <FilesSection files={files} />
+                        <FolderSection folders={folders} showAsCard={showAsCard} />
+
+                        <hr className='my-4 bg-gray-600' />
+
+                        <FilesSection files={files} showAsCard={showAsCard} />
                     </div>
                 </div>
             </PageWrapper>

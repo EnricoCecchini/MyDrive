@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from src.models import File, Folder
+from src.utils import util_get_curr_date
 
 
 def service_update_document_title(uuid: int, document_hash: str, db: Session, name: str) -> dict:
@@ -30,6 +31,7 @@ def service_update_document_title(uuid: int, document_hash: str, db: Session, na
 
         print("[cyan]Updating document name...[/cyan]")
         file_update.name = name
+        file_update.updated_at = util_get_curr_date()
 
         db.commit()
         db.refresh(file_update)
