@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 18, 2025 at 09:34 AM
+-- Generation Time: Jun 24, 2025 at 08:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,6 +20,18 @@ SET time_zone = "+00:00";
 --
 -- Database: `mydrive`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `content_type`
+--
+
+CREATE TABLE `content_type` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -75,7 +87,9 @@ CREATE TABLE `file_tag` (
 CREATE TABLE `file_type` (
   `id` int(10) UNSIGNED NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `name` varchar(255) DEFAULT NULL
+  `name` varchar(255) DEFAULT NULL,
+  `content_type_id` int(10) UNSIGNED DEFAULT NULL,
+  `mime_type_full` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -142,6 +156,12 @@ CREATE TABLE `user` (
 --
 
 --
+-- Indexes for table `content_type`
+--
+ALTER TABLE `content_type`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `file`
 --
 ALTER TABLE `file`
@@ -169,7 +189,8 @@ ALTER TABLE `file_tag`
 -- Indexes for table `file_type`
 --
 ALTER TABLE `file_type`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `file_type_relation_1` (`content_type_id`);
 
 --
 -- Indexes for table `folder`
@@ -203,6 +224,12 @@ ALTER TABLE `user`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `content_type`
+--
+ALTER TABLE `content_type`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `file`
@@ -276,6 +303,12 @@ ALTER TABLE `file_diff`
 ALTER TABLE `file_tag`
   ADD CONSTRAINT `file_tag_relation_1` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `file_tag_relation_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `file_type`
+--
+ALTER TABLE `file_type`
+  ADD CONSTRAINT `file_type_relation_1` FOREIGN KEY (`content_type_id`) REFERENCES `content_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `folder`
