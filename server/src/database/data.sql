@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 24, 2025 at 09:02 PM
+-- Generation Time: Jun 25, 2025 at 12:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -29,7 +29,8 @@ INSERT INTO `content_type` (`id`, `created_at`, `name`) VALUES
 (1, '2025-06-24 18:35:21', 'image'),
 (2, '2025-06-24 18:35:21', 'application'),
 (3, '2025-06-24 18:35:21', 'video'),
-(4, '2025-06-24 18:39:08', 'text');
+(4, '2025-06-24 18:39:08', 'text'),
+(5, '2025-06-24 22:28:14', 'other');
 
 --
 -- Dumping data for table `file_type`
@@ -49,8 +50,10 @@ INSERT INTO `file_type` (`id`, `created_at`, `name`, `content_type_id`, `mime_ty
 (11, '2025-06-24 18:54:12', 'exe', 2, 'x-msdownload'),
 (12, '2025-06-24 18:57:47', 'xml', 4, 'xml'),
 (13, '2025-06-24 18:58:33', 'rar', 2, 'octet-stream'),
-(14, '2025-06-24 18:58:33', 'zip', 2, 'octet-stream'),
-(15, '2025-06-24 18:58:33', '7z', 2, 'octet-stream');
+(14, '2025-06-24 18:58:33', 'zip', 2, 'x-zip-compressed'),
+(15, '2025-06-24 18:58:33', '7z', 2, 'octet-stream'),
+(16, '2025-06-24 19:24:09', 'pptx', 2, 'vnd.openxmlformats-officedocument.presentationml.presentation'),
+(17, '2025-06-24 22:28:29', 'other', 5, 'unkown');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

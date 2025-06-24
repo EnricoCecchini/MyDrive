@@ -7,6 +7,8 @@ from src.models import Content_Type, File, File_Type, Folder
 from src.utils import get_folder, generate_hash
 from datetime import datetime
 
+from src.constants import CONTENT_TYPE_OTHER
+
 
 def _identify_file_type(file_ext: str, mime_major: str, mime_subtype: str, db: Session) -> File_Type | None:
     """
@@ -32,8 +34,16 @@ def _identify_file_type(file_ext: str, mime_major: str, mime_subtype: str, db: S
             )
         ).first()
 
-        print(f"[green]File identified as type: {new_file_type.name or 'OTHER'}.[/green]")
-        return new_file_type
+        if new_file_type:
+            print(f"[green]File identified as type: {new_file_type.name}.[/green]")
+            return new_file_type
+
+        print(f"[yellow]File identified as type: 'OTHER'.[/yellow]")
+        return (
+            db.query(File_Type)
+            .join(Content_Type, File_Type.content_type_id == Content_Type.id)
+            .filter(Content_Type.id == CONTENT_TYPE_OTHER)
+        ).first()
 
     except Exception as e:
         print("[red]Error identifying uploaded file type:[/red]", e)
