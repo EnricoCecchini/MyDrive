@@ -48,15 +48,15 @@ export const FileUploadWrapper: React.FC<FileUploadInterface> = ({hash, children
                 // Error notification if file is not uploaded, but continue posting other files.
                 if (resp.status !== 201) {
                     console.error("Error uploading file:", resp)
-                    toast.error(`Error uploading file: ${currFile.name}`)
+                    toast.error(`Error uploading file: ${currFile.name}.\n${'message' in resp ? resp.message : ''}`)
                 } else {
                     // Success notification if file uploaded
                     toast.success(`${currFile.name} uploaded succesfully.`)
                 }
             }
-        } catch (e) {
+        } catch (e: any) {
             console.log("Error uploading file", e)
-            toast.error(e?.toString())
+            toast.error(`${e?.toString()}.\n${'message' in e ? e.message : ''}`)
         }
         setIsUploading(false)
     }

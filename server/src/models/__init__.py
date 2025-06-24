@@ -1,4 +1,5 @@
 from .base import Base
+from .content_type import Content_Type
 from .file import File
 from .file_diff import File_Diff
 from .file_tag import File_Tag

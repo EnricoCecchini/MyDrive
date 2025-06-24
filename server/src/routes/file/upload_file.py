@@ -6,8 +6,8 @@ from src.utils import db_session, needs_auth, get_root_folder_hash
 file_upload_router = APIRouter()
 
 
-@file_upload_router.post("/upload_file/folder/{folder_hash}")
-def post_upload_file_route(
+@file_upload_router.post("/upload_file/folder/{folder_hash}", status_code=201)
+async def post_upload_file_route(
     file: UploadFile,
     folder_hash: str | None = None,
     auth: dict = Depends(needs_auth),
@@ -20,7 +20,7 @@ def post_upload_file_route(
     if folder_hash == "root":
         folder_hash = get_root_folder_hash(db=db, uuid=uuid)
 
-    return service_file_upload(
+    return await service_file_upload(
         uuid=uuid,
         file=file,
         folder_hash=folder_hash,
