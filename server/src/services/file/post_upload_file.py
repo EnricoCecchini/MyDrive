@@ -20,4 +20,5 @@ def service_file_upload(uuid: int, file: FastAPI_File, folder_hash: str, db: Ses
         - `dict` - Dict with status code and response message
     """
 
+    # Get file_type from filename
     pass
