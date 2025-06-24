@@ -1,5 +1,6 @@
 import React from 'react'
 import FolderItemCard from '../../../components/other/FolderItemCard'
+import FileUploadWrapper from '../../../components/inputs/FileUploadWrapper'
 
 interface FolderSeciontInterface {
     folders: Array<{id: number, name:string, hash:string, tags: Array<{id:number, name: string}>}>
@@ -19,7 +20,9 @@ const FolderSection: React.FC<FolderSeciontInterface> = ({ folders, showAsCard }
                         {folders.map((item, index) => {
                             return (
                                 <div key={`dir${index}`}>
-                                    <FolderItemCard id={item.id} name={item.name} hash={item.hash} tags={item.tags} />
+                                    <FileUploadWrapper hash={item.hash}>
+                                        <FolderItemCard id={item.id} name={item.name} hash={item.hash} tags={item.tags} />
+                                    </FileUploadWrapper>
                                 </div>
                             )
                         }) }

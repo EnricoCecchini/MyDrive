@@ -13,7 +13,7 @@ const FileItemCard: React.FC<FileItemInterface> = ({name, type, hash, date_creat
 
     return (
         <div
-            className="flex-grow basis-[16rem] shrink-0 flex flex-col items-center border rounded-lg p-4 gap-y-2 hover:bg-gray-200"
+            className="flex-grow basis-[16rem] shrink-0 flex flex-col items-center border rounded-lg p-4 gap-y-2 bg-white hover:bg-gray-200"
             onClick={() => handleClick(type, hash)}
         >
             <span className='break-words w-full text-start'>{name}</span>

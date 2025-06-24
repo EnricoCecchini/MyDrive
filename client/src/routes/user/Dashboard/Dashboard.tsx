@@ -14,6 +14,7 @@ import SearchInput from '../../../components/inputs/SearchInput';
 import { getSearchResults } from '../../../api/user/dashboard/getSearchAPI';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import FileUploadWrapper from '../../../components/inputs/FileUploadWrapper';
 
 function Dashboard() {
     const { folder_hash } = useParams<{ folder_hash: string }>()
@@ -269,55 +270,57 @@ function Dashboard() {
                     <div className="flex flex-col p-1 py-4 lg:px-8 w-full h-full gap-y-4 border rounded-lg border-gray-300 shadow-2xl item">
                         <SearchInput onChange={handleSearchDebounce} items={searchResults} onClickItem={handleClickOption} isLoadingSearch={showSearchLoadingIcon} />
 
-                        <div className='flex flex-row w-fit justify-center gap-x-2'>
+                        <FileUploadWrapper hash={folder_hash}>
+                            <div className='flex flex-row w-fit justify-center gap-x-2'>
 
-                            {
-                                folder_hash ?
-                                <>
-                                    <TextInput
-                                        name='name'
-                                        placeholder='Folder Name'
-                                        value={folderName}
-                                        onChange={(e) => {setFolderName(e.target.value)}}
-                                    />
-
-                                    <button
-                                        className='h-full w-fit text-nowrap text-center p-2 px-4 text-white text-lg rounded-lg bg-blue-400 hover:bg-blue-600'
-                                    >
-                                        Update
-                                    </button>
-                                </> : <>
+                                {
+                                    folder_hash ?
                                     <>
                                         <TextInput
                                             name='name'
                                             placeholder='Folder Name'
-                                            value="root"
-                                            disabled={true}
+                                            value={folderName}
+                                            onChange={(e) => {setFolderName(e.target.value)}}
                                         />
+
+                                        <button
+                                            className='h-full w-fit text-nowrap text-center p-2 px-4 text-white text-lg rounded-lg bg-blue-400 hover:bg-blue-600'
+                                        >
+                                            Update
+                                        </button>
+                                    </> : <>
+                                        <>
+                                            <TextInput
+                                                name='name'
+                                                placeholder='Folder Name'
+                                                value="root"
+                                                disabled={true}
+                                            />
+                                        </>
                                     </>
-                                </>
-                            }
-                        </div>
+                                }
+                            </div>
 
-                        <div className='flex flex-col md:flex-row md:items-center w-full justify-between gap-y-2'>
-                            <div className='flex flex-col'>
-                                <div className='flex flex-row w-full items-start gap-x-2'>
-                                    <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
-                                    <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                            <div className='flex flex-col md:flex-row md:items-center w-full justify-between gap-y-2'>
+                                <div className='flex flex-col'>
+                                    <div className='flex flex-row w-full items-start gap-x-2'>
+                                        <ButtonCustom icon={<AddIcon />} label='New Docs' width='fit' onClick={handleNewDocs} />
+                                        <ButtonCustom icon={<AddIcon />} label='New Folder' width='fit' onClick={handleNewFolder} />
+                                    </div>
+                                </div>
+                                <div className='flex flex-col'>
+                                    <div className='flex flex-row w-full justify-end gap-x-2'>
+                                        <ButtonCustom icon={showAsCard ? <FormatListBulletedIcon /> : <DashboardIcon />} label='Show' width='fit' onClick={() => {setShowAsCard(!showAsCard)}} />
+                                    </div>
                                 </div>
                             </div>
-                            <div className='flex flex-col'>
-                                <div className='flex flex-row w-full justify-end gap-x-2'>
-                                    <ButtonCustom icon={showAsCard ? <FormatListBulletedIcon /> : <DashboardIcon />} label='Show' width='fit' onClick={() => {setShowAsCard(!showAsCard)}} />
-                                </div>
-                            </div>
-                        </div>
 
-                        <FolderSection folders={folders} showAsCard={showAsCard} />
+                            <FolderSection folders={folders} showAsCard={showAsCard} />
 
-                        <hr className='my-4 bg-gray-600' />
+                            <hr className='my-4 bg-gray-600' />
 
-                        <FilesSection files={files} showAsCard={showAsCard} />
+                            <FilesSection files={files} showAsCard={showAsCard} />
+                        </FileUploadWrapper>
                     </div>
                 </div>
             </PageWrapper>
