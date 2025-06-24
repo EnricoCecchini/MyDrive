@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { postUploadFile } from '../../api/user/dashboard/postUploadFile'
+import { postUploadFile } from '../../api/files/postUploadFile'
 import { toast } from 'react-toastify'
 import Loading from '../Loading'
 

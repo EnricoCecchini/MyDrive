@@ -1,4 +1,4 @@
-import usersApiClient from "../_userAPI"
+import filesAPIClient from "./_filesAPI"
 
 interface PostUploadFileInterface {
     folder_hash: string | null
@@ -10,7 +10,7 @@ export const postUploadFile = async (data: PostUploadFileInterface) => {
         const formData = new FormData()
         formData.append("file", data.file)
 
-        const response = await usersApiClient.post(`/upload_file/folder/${data.folder_hash || ''}`, formData, {
+        const response = await filesAPIClient.post(`/upload_file/folder/${data.folder_hash || 'root'}`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             }

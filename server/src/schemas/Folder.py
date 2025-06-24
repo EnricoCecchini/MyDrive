@@ -7,5 +7,3 @@ from pydantic import BaseModel
 class NewFolderRequest(BaseModel):
     name: str
     parent_hash: str
-
-
