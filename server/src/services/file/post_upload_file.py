@@ -134,16 +134,18 @@ async def service_file_upload(uuid: int, file: FastAPI_File, folder_hash: str, d
         )
 
         db.add(new_file)
-        db.commit()
+        db.flush()
         db.refresh(new_file)
 
-        print("[cyan]File registered in database[/cyan]")
-
         # Format name with timestamp
-        file_name = _format_filename_timestamp(filename=file.filename, timestamp=new_file.created_at)
+        # file_name = _format_filename_timestamp(filename=file.filename, timestamp=new_file.created_at)
 
         print("[cyan]Saving file to path.[/cyan]")
-        file_path = await _save_file_to_path(uuid=uuid, file=file, file_name=file_name, target_dir=target_dir, db=db)
+        file_path = await _save_file_to_path(uuid=uuid, file=file, file_name=file.filename, target_dir=target_dir, db=db)
+
+        db.commit()
+
+        print("[green]File saved succesfully.[/green]")
 
         return {
             "message": "File uploaded successfully.",

@@ -31,7 +31,7 @@ To run, you must create a .env file with the following values in the root folder
 
 
 ## Planned Features
-[ ] Rich text editor for writing.
+[x] Rich text editor for writing.
 [ ] Spreadsheets editor.
 [ ] File upload/management system in user-defined path.
 [ ] Collaborative file editing.
